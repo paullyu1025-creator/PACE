@@ -1,0 +1,35 @@
+{
+  "name": "PACE - Multi-Agent Running Coach",
+  "short_name": "PACE",
+  "description": "A multi-agent AI body management system for distance runners.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#070707",
+  "theme_color": "#070707",
+  "categories": ["health", "fitness", "sports", "productivity"],
+  "icons": [
+    {
+      "src": "./icons/pace-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Daily Readiness",
+      "short_name": "Readiness",
+      "description": "Open the PACE readiness dashboard.",
+      "url": "./index.html#today",
+      "icons": [
+        {
+          "src": "./icons/pace-icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}

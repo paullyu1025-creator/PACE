@@ -1,0 +1,1874 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PACE - Multi-Agent Running Coach</title>
+  <meta name="theme-color" content="#070707" />
+  <meta name="description" content="PACE is a multi-agent AI body management system for distance runners." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="PACE" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/pace-icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icons/pace-icon.svg" />
+  <style>
+    :root{
+      --bg:#070707;
+      --surface:#0f0f0f;
+      --panel:#141414;
+      --panel-2:#191919;
+      --border:#262626;
+      --text:#f1f1f1;
+      --muted:#8b8b8b;
+      --faint:#565656;
+      --accent:#d4ff3e;
+      --accent-2:#a8cc30;
+      --cyan:#61c7ef;
+      --orange:#f4a261;
+      --red:#ff5a5f;
+      --purple:#ba75ff;
+      --yellow:#ffb84a;
+      --green:#80e36a;
+      --shadow:0 18px 60px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-thumb{background:#333;border-radius:99px}
+    ::selection{background:rgba(212,255,62,.25)}
+    .app{min-height:100vh;background:radial-gradient(circle at 12% -5%,rgba(212,255,62,.07),transparent 28%),var(--bg)}
+    .center-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px}
+    .welcome{width:min(560px,100%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:24px}
+    .brand{font-size:86px;line-height:.9;font-weight:900;letter-spacing:-7px;color:var(--accent)}
+    .rule{width:52px;height:2px;background:var(--accent)}
+    .kicker{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted)}
+    .copy{max-width:430px;color:var(--muted);font-size:15px;line-height:1.75}
+    .primary{height:44px;border:0;border-radius:6px;background:var(--accent);color:#050505;padding:0 24px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;display:inline-flex;align-items:center;gap:9px}
+    .primary:hover{background:var(--accent-2)}
+    .primary:disabled{opacity:.38;cursor:not-allowed}
+    .ghost{height:38px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);padding:0 15px;font-size:12px;font-weight:650}
+    .ghost:hover{border-color:var(--accent);color:var(--text)}
+    .progress{position:fixed;top:0;left:0;right:0;height:3px;background:#171717;z-index:3}
+    .progress span{display:block;height:100%;background:var(--accent);transition:width .28s ease}
+    .step-card{width:min(620px,100%);display:flex;flex-direction:column;align-items:center}
+    .step-count{font-size:11px;color:var(--muted);letter-spacing:.13em;text-transform:uppercase;margin-bottom:40px}
+    .step-title{font-size:31px;font-weight:750;letter-spacing:-.6px;text-align:center;margin-bottom:26px}
+    .step-input{width:min(460px,100%);border:0;border-bottom:2px solid var(--accent);background:transparent;color:var(--text);outline:0;text-align:center;font-size:23px;padding:12px 4px}
+    .step-input::placeholder{color:#333}
+    .level-grid{width:min(520px,100%);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .level-card,.source-card,.metric-card,.insight-card,.workout-card,.readiness-card,.week-card,.agent-detail,.chat-item,.modal-card{border:1px solid var(--border);background:var(--panel);border-radius:8px}
+    .level-card{padding:18px;text-align:left;color:var(--text)}
+    .level-card:hover{border-color:var(--accent);background:rgba(212,255,62,.045)}
+    .level-card strong{display:block;font-size:15px;margin-bottom:5px}
+    .level-card span{display:block;color:var(--muted);font-size:12px;line-height:1.45}
+    .sources-screen{min-height:100vh;padding:56px 24px;display:flex;align-items:flex-start;justify-content:center}
+    .sources-wrap{width:min(780px,100%)}
+    .screen-title{font-size:28px;font-weight:800;letter-spacing:-.55px;text-align:center;margin:0 0 8px}
+    .screen-sub{font-size:13px;line-height:1.65;color:var(--muted);text-align:center;margin:0 0 30px}
+    .sources-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .source-card{padding:15px;text-align:left;position:relative;min-height:148px}
+    .source-card:hover{border-color:#3a3a3a}
+    .source-card.connected{border-color:var(--accent);background:rgba(212,255,62,.045)}
+    .source-card.connecting{border-color:var(--yellow)}
+    .source-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+    .source-icon{font-size:18px}
+    .status-dot{width:22px;height:22px;border-radius:50%;background:#262626;display:grid;place-items:center;color:#050505;font-size:12px;font-weight:900}
+    .status-dot.connected{background:var(--accent)}
+    .status-dot.connecting{border:2px solid var(--yellow);background:transparent;animation:spin .8s linear infinite}
+    .source-name{font-size:14px;font-weight:800}
+    .source-signals{font-size:11px;color:var(--muted);line-height:1.55;margin-top:5px}
+    .tag-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+    .tag{font-size:10px;color:#bdbdbd;background:#242424;border:1px solid #303030;border-radius:4px;padding:3px 7px}
+    .source-action{font-size:11px;margin-top:10px;color:var(--muted)}
+    .source-card.connected .source-action,.source-card.connecting .source-action{color:var(--accent)}
+    .sources-footer{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:22px;flex-wrap:wrap}
+    .shell{height:100vh;display:grid;grid-template-columns:230px 1fr;background:var(--bg);overflow:hidden}
+    .sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+    .side-logo{height:60px;display:flex;align-items:center;padding:0 18px;border-bottom:1px solid var(--border);font-size:23px;font-weight:900;letter-spacing:-2px;color:var(--accent)}
+    .profile{padding:15px 18px;border-bottom:1px solid var(--border)}
+    .profile-name{font-size:14px;font-weight:800}
+    .profile-meta{font-size:11px;color:var(--muted);margin-top:4px}
+    .profile-goal{font-size:11px;color:var(--accent);margin-top:7px;line-height:1.4}
+    .nav{padding:14px 10px;border-bottom:1px solid var(--border)}
+    .nav button{width:100%;height:36px;border:0;background:transparent;color:var(--muted);display:flex;align-items:center;gap:10px;border-radius:6px;padding:0 10px;font-size:12px;text-align:left}
+    .nav button.active,.nav button:hover{background:#171717;color:var(--text)}
+    .side-section{padding:15px 18px;min-height:0}
+    .side-section.grow{flex:1;overflow:auto}
+    .side-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.13em;margin-bottom:10px}
+    .agent-row{display:grid;grid-template-columns:8px 1fr auto;gap:9px;align-items:center;min-height:31px}
+    .dot{width:7px;height:7px;border-radius:50%;background:#303030}
+    .dot.thinking{animation:pulse .75s infinite}
+    .agent-name{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .agent-score{font-size:11px;color:var(--faint)}
+    .agent-row.active .agent-name{color:var(--text)}
+    .data-row{display:flex;align-items:center;gap:8px;padding:4px 0}
+    .data-row span:last-child{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .footer-note{border-top:1px solid var(--border);padding:14px 18px;color:var(--muted);font-size:10px;line-height:1.55}
+    .install-app{width:100%;height:32px;border:1px solid rgba(212,255,62,.35);border-radius:6px;background:rgba(212,255,62,.08);color:var(--accent);font-size:11px;font-weight:800;margin-top:10px}
+    .install-app:hover{background:rgba(212,255,62,.13)}
+    .toast{position:fixed;right:18px;bottom:18px;max-width:340px;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow);border-radius:8px;padding:12px 14px;color:#d8d8d8;font-size:12px;line-height:1.55;z-index:30}
+    .main{min-width:0;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+    .topbar{height:60px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#090909}
+    .top-title{font-size:14px;font-weight:800}
+    .top-sub{font-size:11px;color:var(--muted);margin-top:3px}
+    .top-agents{display:flex;gap:5px;align-items:center}
+    .tiny-dot{width:7px;height:7px;border-radius:50%;background:#2a2a2a}
+    .view{flex:1;min-height:0;overflow:auto;padding:22px}
+    .dashboard-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);gap:16px;align-items:start}
+    .grid-full{grid-column:1/-1}
+    .section-title{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 10px}
+    .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .metric-card{padding:14px;min-height:118px}
+    .metric-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+    .metric-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .metric-value{font-size:25px;font-weight:850;letter-spacing:-.5px}
+    .metric-delta{font-size:11px;color:var(--accent);margin-top:3px}
+    .spark{width:100%;height:34px}
+    .spark polyline{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .readiness-card{padding:18px;min-height:238px;position:relative;overflow:hidden}
+    .score-wrap{display:flex;align-items:center;gap:18px}
+    .ring{width:118px;height:118px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--score)*1%),#272727 0);display:grid;place-items:center;position:relative;flex-shrink:0}
+    .ring:after{content:"";position:absolute;inset:9px;background:var(--panel);border-radius:50%}
+    .ring strong{position:relative;z-index:1;font-size:31px;letter-spacing:-1px}
+    .verdict{font-size:20px;font-weight:850;letter-spacing:-.3px;margin-bottom:6px}
+    .recommend{font-size:13px;line-height:1.65;color:#cfcfcf}
+    .workout-card{padding:16px;min-height:238px}
+    .workout-type{font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-weight:800;margin-bottom:10px}
+    .workout-title{font-size:21px;font-weight:850;letter-spacing:-.35px;margin-bottom:10px}
+    .workout-details{font-size:13px;line-height:1.75;color:#d4d4d4}
+    .week-card{padding:16px}
+    .week-bars{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;align-items:end;height:160px;margin-top:12px}
+    .day{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
+    .bar-track{height:112px;width:100%;max-width:34px;background:#222;border-radius:5px;display:flex;align-items:end;overflow:hidden}
+    .bar-fill{width:100%;background:linear-gradient(180deg,var(--accent),#7fa11d);border-radius:5px 5px 0 0}
+    .day-label{font-size:10px;color:var(--muted)}
+    .day-load{font-size:10px;color:#cfcfcf}
+    .insights{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .insight-card{padding:14px;min-height:142px}
+    .insight-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+    .insight-agent{font-size:12px;font-weight:850}
+    .badge{font-size:10px;border-radius:4px;padding:3px 7px;border:1px solid rgba(255,255,255,.12);background:#202020;color:#ddd;white-space:nowrap}
+    .insight-title{font-size:15px;font-weight:800;line-height:1.35;margin-bottom:7px}
+    .insight-copy{font-size:12px;line-height:1.6;color:var(--muted)}
+    .chat-layout{height:100%;display:flex;flex-direction:column;min-height:0}
+    .messages{flex:1;overflow:auto;display:flex;flex-direction:column;gap:16px;padding-bottom:12px}
+    .msg{display:flex;gap:10px}
+    .msg.user{justify-content:flex-end}
+    .avatar{width:28px;height:28px;border-radius:6px;display:grid;place-items:center;flex-shrink:0;font-size:10px;font-weight:900}
+    .avatar.ai{background:var(--accent);color:#050505}
+    .avatar.user{background:var(--panel);border:1px solid var(--border);color:var(--muted)}
+    .bubble{max-width:min(760px,78%);display:flex;flex-direction:column;gap:9px}
+    .bubble.user{align-items:flex-end}
+    .message-text{font-size:14px;line-height:1.75;white-space:pre-wrap;color:var(--text)}
+    .message-text.user{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 13px}
+    .pipeline{border:1px solid var(--border);background:var(--surface);border-radius:8px;overflow:hidden;width:100%}
+    .pipeline-head{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid var(--border)}
+    .pipeline-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;display:flex;gap:7px;align-items:center}
+    .pipeline-body{padding:8px 0}
+    .agent-detail{border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;padding:10px 12px;display:grid;grid-template-columns:26px 1fr auto;gap:10px}
+    .agent-detail:last-child{border-bottom:0}
+    .agent-icon{width:26px;height:26px;border-radius:6px;display:grid;place-items:center;font-size:13px}
+    .agent-detail-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+    .agent-detail-title strong{font-size:12px}
+    .agent-detail-title span{font-size:10px;color:var(--muted)}
+    .agent-headline{font-size:12px;line-height:1.55;color:#d5d5d5;margin-bottom:5px}
+    .agent-insights{margin:0;padding-left:17px;color:var(--muted);font-size:11px;line-height:1.55}
+    .spinner{width:16px;height:16px;border:2px solid #2d2d2d;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin-top:4px}
+    .flag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+    .flag{font-size:10px;border-radius:4px;padding:3px 7px;background:rgba(255,90,95,.11);border:1px solid rgba(255,90,95,.25);color:#ff8b8f}
+    .conflict{display:flex;gap:8px;margin:8px 12px;padding:9px 10px;border-radius:6px;background:rgba(255,184,74,.09);border:1px solid rgba(255,184,74,.3);color:var(--yellow);font-size:12px;line-height:1.45}
+    .typing{display:flex;gap:5px;padding:7px 0}
+    .typing span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:typing 1s infinite}
+    .typing span:nth-child(2){animation-delay:.15s}
+    .typing span:nth-child(3){animation-delay:.3s}
+    .suggestions{display:flex;gap:8px;flex-wrap:wrap;padding:4px 0 12px}
+    .suggestions button{border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:6px;height:34px;padding:0 12px;font-size:12px}
+    .suggestions button:hover{border-color:var(--accent);color:var(--text)}
+    .composer{border-top:1px solid var(--border);padding:14px 0 0;display:flex;gap:10px;align-items:flex-end}
+    textarea{flex:1;resize:none;max-height:120px;border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:8px;outline:0;padding:12px 13px;font-size:14px;line-height:1.5}
+    textarea:focus{border-color:#454545}
+    .send{width:42px;height:42px;border:0;border-radius:8px;background:var(--accent);color:#050505;font-size:18px;font-weight:900}
+    .send:disabled{opacity:.4}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:22px;z-index:20}
+    .modal-card{width:min(720px,100%);max-height:84vh;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+    .modal-head{height:58px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+    .modal-title{font-weight:850;font-size:15px}
+    .close{width:32px;height:32px;border:0;background:transparent;color:var(--muted);font-size:22px}
+    .modal-body{padding:16px;overflow:auto}
+    .history-chart{border:1px solid var(--border);border-radius:8px;background:var(--panel);padding:16px}
+    .history-svg{width:100%;height:220px}
+    .history-svg polyline{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .history-svg line{stroke:#252525}
+    .history-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:6px}
+    .readiness-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+    .mini{border:1px solid var(--border);border-radius:8px;background:var(--panel);padding:12px}
+    .mini-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+    .mini-value{font-size:20px;font-weight:850}
+    .memory-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+    .memory-card{border:1px solid var(--border);background:var(--panel);border-radius:8px;padding:14px;min-height:128px}
+    .memory-card h3{margin:0 0 8px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+    .memory-card strong{display:block;font-size:22px;letter-spacing:-.4px;margin-bottom:7px}
+    .memory-card p{margin:0;color:#cfcfcf;font-size:12px;line-height:1.55}
+    .memory-panel{border:1px solid var(--border);background:var(--panel);border-radius:8px;padding:16px;margin-top:12px}
+    .memory-list{display:grid;gap:8px;margin-top:10px}
+    .memory-row{display:grid;grid-template-columns:116px 1fr;gap:12px;border-top:1px solid var(--border);padding-top:10px;color:#d8d8d8;font-size:12px;line-height:1.55}
+    .memory-row:first-child{border-top:0;padding-top:0}
+    .memory-date{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+    .memory-empty{color:var(--muted);font-size:13px;line-height:1.7;border:1px dashed #333;border-radius:8px;padding:16px}
+    .data-console{max-width:1120px;margin:0 auto;display:grid;gap:14px}
+    .data-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.9fr);gap:14px;align-items:start}
+    .data-panel{border:1px solid var(--border);background:var(--panel);border-radius:8px;padding:16px}
+    .manual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+    .manual-field label{display:block;font-size:11px;color:var(--muted);font-weight:850;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px}
+    .manual-field input,.manual-field textarea{width:100%;border:1px solid var(--border);background:#101010;color:var(--text);border-radius:7px;outline:0;padding:10px 11px;font-size:14px}
+    .manual-field textarea{min-height:88px;resize:vertical;line-height:1.5}
+    .manual-field.full{grid-column:1/-1}
+    .source-big{border:1px solid var(--border);background:#111;border-radius:8px;padding:15px;margin-top:12px}
+    .source-big.connected{border-color:#fc4c02;background:rgba(252,76,2,.06)}
+    .source-big-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+    .source-big-title{font-size:17px;font-weight:900}
+    .source-big-copy{font-size:12px;line-height:1.65;color:var(--muted)}
+    .activity-list{display:grid;gap:8px;margin-top:12px}
+    .activity-row{display:grid;grid-template-columns:1fr auto;gap:10px;border-top:1px solid var(--border);padding-top:9px;font-size:12px;color:#d7d7d7}
+    .activity-row:first-child{border-top:0;padding-top:0}
+    .activity-meta{color:var(--muted);font-size:11px;margin-top:3px}
+    .today-report{max-width:1120px;margin:0 auto;color:#ededed}
+    .report-paper{border:1px solid var(--border);background:linear-gradient(180deg,#151515,#101010);border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
+    .report-head{padding:22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+    .report-date{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:8px}
+    .report-title{font-size:30px;line-height:1.1;font-weight:900;letter-spacing:-.7px}
+    .report-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .checkin{padding:18px 22px;border-bottom:1px solid var(--border);background:#111}
+    .checkin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+    .field{border:1px solid var(--border);background:var(--panel);border-radius:8px;padding:13px}
+    .field label{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#dcdcdc;font-size:12px;font-weight:800;margin-bottom:9px}
+    .field small{font-size:11px;color:var(--muted);font-weight:650}
+    .field input[type="range"]{width:100%;accent-color:var(--accent)}
+    .field input[type="text"]{width:100%;height:38px;border:1px solid var(--border);background:#101010;color:var(--text);border-radius:6px;padding:0 10px;outline:0}
+    .toggle-row{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;line-height:1.5}
+    .toggle-row input{width:18px;height:18px;accent-color:var(--accent)}
+    .briefing-loading{padding:22px}
+    .briefing-body{padding:22px;display:grid;gap:16px}
+    .hero-brief{display:grid;grid-template-columns:180px 1fr;gap:22px;align-items:center;border-bottom:1px solid var(--border);padding-bottom:18px}
+    .big-score{width:168px;height:168px;border-radius:50%;background:conic-gradient(var(--score-color) calc(var(--score)*1%),#2a2a2a 0);display:grid;place-items:center;position:relative}
+    .big-score:after{content:"";position:absolute;inset:12px;background:#121212;border-radius:50%}
+    .big-score strong{position:relative;z-index:1;font-size:46px;letter-spacing:-1.8px}
+    .verdict-line{font-size:28px;font-weight:900;letter-spacing:-.6px;margin-bottom:8px}
+    .brief-copy{font-size:14px;line-height:1.8;color:#cfcfcf;max-width:720px}
+    .brief-grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(360px,1.05fr);gap:14px;align-items:start}
+    .prescription{border:1px solid rgba(212,255,62,.28);background:rgba(212,255,62,.055);border-radius:8px;padding:16px}
+    .prescription-title{font-size:12px;color:var(--accent);font-weight:900;text-transform:uppercase;letter-spacing:.11em;margin-bottom:10px}
+    .workout-name{font-size:24px;font-weight:900;letter-spacing:-.4px;margin-bottom:12px}
+    .rx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+    .rx-cell{border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.18);border-radius:6px;padding:9px}
+    .rx-cell span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:5px}
+    .rx-cell strong{display:block;font-size:13px}
+    .flag-list{display:grid;gap:8px}
+    .flag-card{border:1px solid rgba(255,184,74,.24);background:rgba(255,184,74,.075);border-radius:8px;padding:12px}
+    .flag-card.red{border-color:rgba(255,90,95,.3);background:rgba(255,90,95,.085)}
+    .flag-card.green{border-color:rgba(212,255,62,.25);background:rgba(212,255,62,.055)}
+    .flag-meta{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}
+    .flag-signal{font-size:13px;font-weight:850;margin-bottom:4px}
+    .flag-action{font-size:12px;line-height:1.55;color:#cfcfcf}
+    .agent-compact{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+    .compact-card{border:1px solid var(--border);background:var(--panel);border-radius:8px;padding:11px;min-height:112px}
+    .compact-score{font-size:20px;font-weight:900;margin:7px 0 5px}
+    .compact-name{font-size:11px;color:var(--muted);font-weight:800}
+    .compact-headline{font-size:11px;line-height:1.45;color:#cfcfcf}
+    .dual-chart{width:100%;height:250px}
+    .dual-chart .grid{stroke:#252525}
+    .dual-chart .green-zone{fill:rgba(212,255,62,.055)}
+    .dual-chart .score-line{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .dual-chart .load-line{fill:none;stroke:var(--cyan);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+    .chart-legend{display:flex;gap:14px;align-items:center;color:var(--muted);font-size:11px;margin-top:8px;flex-wrap:wrap}
+    .legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}
+    .red-marker{fill:var(--red);stroke:#111;stroke-width:2}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 8px currentColor}50%{opacity:.35;box-shadow:none}}
+    @keyframes typing{0%,100%{transform:translateY(0);opacity:.3}45%{transform:translateY(-5px);opacity:1}}
+    @media (max-width:980px){
+      .shell{grid-template-columns:1fr}
+      .sidebar{display:none}
+      .dashboard-grid{grid-template-columns:1fr}
+      .metrics,.insights,.readiness-list{grid-template-columns:1fr}
+      .brief-grid,.hero-brief,.checkin-grid{grid-template-columns:1fr}
+      .agent-compact{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .memory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .data-grid,.manual-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:620px){
+      .center-screen{padding:22px}
+      .brand{font-size:62px;letter-spacing:-5px}
+      .step-title{font-size:25px}
+      .level-grid,.sources-grid{grid-template-columns:1fr}
+      .view{padding:14px}
+      .bubble{max-width:92%}
+      .topbar{padding:0 14px}
+      .memory-grid{grid-template-columns:1fr}
+      .memory-row{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app"></div>
+   >
+    const C = {
+      accent: "#d4ff3e", cyan: "#61c7ef", orange: "#f4a261", red: "#ff5a5f",
+      purple: "#ba75ff", yellow: "#ffb84a", green: "#80e36a", muted: "#8b8b8b"
+    };
+
+    const AGENTS = {
+      training: { id:"training", name:"Training Agent", short:"Training", icon:"⚡", color:C.accent },
+      recovery: { id:"recovery", name:"Recovery Agent", short:"Recovery", icon:"◎", color:C.cyan },
+      nutrition: { id:"nutrition", name:"Nutrition Agent", short:"Nutrition", icon:"◑", color:C.orange },
+      injury: { id:"injury", name:"Injury Risk Agent", short:"Injury Risk", icon:"⊕", color:C.red },
+      race: { id:"race", name:"Race Strategy Agent", short:"Race", icon:"◈", color:C.purple }
+    };
+    const AGENT_IDS = Object.keys(AGENTS);
+
+    const DATA_SOURCES = [
+      { id:"manual", name:"Manual Daily Data", signals:["sleep","soreness","mileage","HRV"], agents:["training","recovery","injury"], color:"#d4ff3e", icon:"✎" },
+      { id:"strava", name:"Strava", signals:["run logs","distance","pace","elevation"], agents:["training","race"], color:"#fc4c02", icon:"⚡" }
+    ];
+
+    const ONBOARDING = [
+      { field:"name", q:"What's your name?", ph:"Alex" },
+      { field:"weeklyMiles", q:"Current weekly mileage?", ph:"45 miles/week" },
+      { field:"goal", q:"Primary goal right now?", ph:"Sub-3:30 marathon" },
+      { field:"raceDate", q:"Target race date?", ph:"November 2, 2026 or no race yet" }
+    ];
+    const LEVELS = [
+      { value:"beginner", label:"Beginner", note:"Under 2 years running" },
+      { value:"intermediate", label:"Intermediate", note:"2-5 years, raced before" },
+      { value:"advanced", label:"Advanced", note:"5+ years, competitive" },
+      { value:"elite", label:"Elite", note:"Sub-elite or previously coached" }
+    ];
+
+    function seedReadinessHistory(){
+      const today = new Date();
+      return Array.from({ length: 30 }, (_, i) => {
+        const date = new Date(today);
+        date.setDate(today.getDate() - (29 - i));
+        const wave = Math.sin(i / 3.2) * 9;
+        const loadWave = Math.cos(i / 4.1) * 13;
+        const score = Math.round(Math.max(42, Math.min(91, 72 + wave - (i % 9 === 0 ? 14 : 0) + (i % 7 === 3 ? 5 : 0))));
+        const load = Math.round(Math.max(22, Math.min(88, 52 + loadWave + (i % 6) * 4)));
+        return { date: date.toISOString().slice(0, 10), score, load, redFlag: score < 55 };
+      });
+    }
+
+    const STORAGE_KEY = "pace-stage4-memory-v1";
+
+    function seedMemory(){
+      return {
+        version: 1,
+        createdAt: new Date().toISOString(),
+        updatedAt: null,
+        trainingHistory: [],
+        checkins: [],
+        injuryPatterns: [],
+        nutritionTendencies: [],
+        hrvReadings: [],
+        coachingDecisions: [],
+        notes: []
+      };
+    }
+
+    function loadStoredState(){
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      } catch {
+        return null;
+      }
+    }
+
+    const storedState = loadStoredState();
+
+    const state = {
+      phase:storedState?.profile?.name ? "app" : "welcome",
+      view:storedState?.profile?.name ? "today" : "dashboard",
+      step:0,
+      temp:"",
+      profile:storedState?.profile || { name:"", weeklyMiles:"", goal:"", raceDate:"", level:"" },
+      sources:storedState?.sources || {},
+      manualData:storedState?.manualData || { sleepHours:"", soreness:"", mileage:"", hrv:"", updatedAt:null },
+      stravaData:storedState?.stravaData || { connected:false, lastSync:null, activities:[] },
+      messages:storedState?.messages || [],
+      loading:false,
+      pipeline:null,
+      lastScores:storedState?.lastScores || { training:null, recovery:null, nutrition:null, injury:null, race:null },
+      checkin:storedState?.checkin || { energy:3, sleepQuality:3, soreness:"", pain:false },
+      todayBriefing:storedState?.todayBriefing || null,
+      readinessHistory:storedState?.readinessHistory || seedReadinessHistory(),
+      memory:storedState?.memory || seedMemory(),
+      daily:storedState?.daily || null,
+      modal:false
+    };
+    let deferredInstallPrompt = null;
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      state.installAvailable = true;
+      if (state.phase === "app") render();
+    });
+
+    window.addEventListener("appinstalled", () => {
+      deferredInstallPrompt = null;
+      state.installAvailable = false;
+      showToast("PACE is installed. You can now launch it like a normal app.");
+      if (state.phase === "app") render();
+    });
+
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+      });
+    }
+
+    const $ = (sel) => document.querySelector(sel);
+    const app = $("#app");
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c]));
+    const milesNumber = () => Math.max(10, parseInt(String(state.manualData?.mileage || state.profile.weeklyMiles).match(/\d+/)?.[0] || "40", 10));
+    const connectedIds = () => Object.keys(state.sources).filter(id => state.sources[id] === "connected" && DATA_SOURCES.some(src => src.id === id));
+    const connectedNames = () => connectedIds().map(id => DATA_SOURCES.find(s => s.id === id)?.name).filter(Boolean);
+    const todayKey = () => new Date().toISOString().slice(0, 10);
+    const dataSnapshot = () => {
+      const miles = milesNumber();
+      const seed = state.messages.length + connectedIds().length + state.profile.goal.length;
+      const manual = state.manualData || {};
+      const strava = stravaSummary();
+      const sleepHours = Number(manual.sleepHours) || +(6.3 + (seed % 13)/10).toFixed(1);
+      const hrv = Number(manual.hrv) || Math.round(48 + (seed % 16));
+      const soreness = manual.soreness?.trim() || (seed % 4 === 0 ? "left calf tightness" : seed % 5 === 0 ? "Achilles stiffness" : "normal muscle soreness");
+      const acuteLoad = strava.weeklyMiles ? Math.round(strava.weeklyMiles * 1.14) : Math.round(miles * 1.16);
+      const chronicLoad = Math.round(miles * 1.03);
+      return {
+        weeklyMileage:miles,
+        sevenDayLoad:strava.loads.length ? strava.loads : [42,55,28,68,35,82,22].map((v,i)=>Math.min(95, Math.round(v + miles/4 + ((seed+i)%9)))),
+        vo2: Math.round(42 + miles/4 + (state.profile.level === "elite" ? 8 : state.profile.level === "advanced" ? 5 : 0)),
+        hrv,
+        sleep: sleepHours,
+        acuteLoad,
+        chronicLoad,
+        soreness,
+        strava,
+        sources: connectedNames()
+      };
+    };
+
+    function saveAppState(){
+      try {
+        const payload = {
+          profile: state.profile,
+          sources: state.sources,
+          manualData: state.manualData,
+          stravaData: state.stravaData,
+          messages: state.messages.slice(-30),
+          lastScores: state.lastScores,
+          checkin: state.checkin,
+          todayBriefing: state.todayBriefing,
+          readinessHistory: state.readinessHistory,
+          memory: state.memory,
+          daily: state.daily
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch {}
+    }
+
+    function resetMemory(){
+      localStorage.removeItem(STORAGE_KEY);
+      state.memory = seedMemory();
+      state.messages = [];
+      state.todayBriefing = null;
+      state.readinessHistory = seedReadinessHistory();
+      state.lastScores = { training:null, recovery:null, nutrition:null, injury:null, race:null };
+      computeDaily();
+      saveAppState();
+      showToast("PACE memory has been cleared for this browser.");
+      render();
+    }
+
+    function locationFromText(text){
+      const raw = String(text || "").toLowerCase();
+      const parts = ["achilles","calf","knee","shin","plantar","foot","ankle","hip","hamstring","quad","glute","back"];
+      return parts.find(p => raw.includes(p)) || (raw.trim() ? raw.trim().slice(0, 36) : "");
+    }
+
+    function memorySummary(){
+      const memory = state.memory || seedMemory();
+      const recentTraining = memory.trainingHistory.slice(-8);
+      const hardDays = recentTraining.filter(t => /threshold|tempo|interval|hard|race|long/i.test(t.workout || t.type || ""));
+      const injuryCounts = {};
+      memory.injuryPatterns.forEach(p => {
+        const key = p.location || "unspecified";
+        injuryCounts[key] = (injuryCounts[key] || 0) + 1;
+      });
+      const recurringInjury = Object.entries(injuryCounts).sort((a,b)=>b[1]-a[1])[0];
+      const hrv = memory.hrvReadings.slice(-14);
+      const hrvBaseline = hrv.length ? Math.round(hrv.reduce((s,r)=>s+r.value,0) / hrv.length) : null;
+      const lowReadiness = state.readinessHistory.slice(-10).filter(d => d.score < 60).length;
+      const hardToInjury = detectHardToInjuryPattern(memory);
+      return {
+        totalRuns: memory.trainingHistory.length,
+        hardDays: hardDays.length,
+        recurringInjury: recurringInjury ? { location: recurringInjury[0], count: recurringInjury[1] } : null,
+        hardToInjury,
+        hrvBaseline,
+        lowReadiness,
+        decisions: memory.coachingDecisions.slice(-5),
+        nutrition: memory.nutritionTendencies.slice(-4),
+        lastCheckin: memory.checkins.at(-1) || null
+      };
+    }
+
+    function memoryInsightFor(query = ""){
+      const summary = memorySummary();
+      const q = String(query).toLowerCase();
+      if(summary.hardToInjury && /hard|workout|pain|injur|sore|tight|ache|calf|achilles|knee|shin/.test(q)){
+        return `Memory: last time hard sessions stacked up, ${summary.hardToInjury.location} was reported ${summary.hardToInjury.daysAfter} day${summary.hardToInjury.daysAfter === 1 ? "" : "s"} later, so today's intensity gets extra scrutiny.`;
+      }
+      if(summary.recurringInjury && (q.includes(summary.recurringInjury.location) || /pain|injur|sore|tight|ache/.test(q))){
+        return `Memory: ${summary.recurringInjury.location} has appeared ${summary.recurringInjury.count} time${summary.recurringInjury.count > 1 ? "s" : ""} in prior check-ins, so injury risk gets extra weight.`;
+      }
+      if(summary.decisions.length){
+        return `Memory: recent coaching pattern is "${summary.decisions.at(-1).decision}".`;
+      }
+      if(summary.hrvBaseline){
+        return `Memory: current HRV context is compared against a stored ${summary.hrvBaseline} ms baseline.`;
+      }
+      return "Memory: no strong longitudinal pattern yet; today's decision relies mostly on the current check-in.";
+    }
+
+    function detectHardToInjuryPattern(memory){
+      const training = (memory.trainingHistory || []).filter(t => t.date);
+      const injuries = (memory.injuryPatterns || []).filter(i => i.date && i.location);
+      for(const injury of injuries.slice().reverse()){
+        const injuryTime = Date.parse(injury.date);
+        if(Number.isNaN(injuryTime)) continue;
+        const priorHard = training.filter(t => {
+          const tTime = Date.parse(t.date);
+          const daysBefore = (injuryTime - tTime) / 86400000;
+          return daysBefore >= 1 && daysBefore <= 3 && /threshold|tempo|interval|hard|race|long/i.test(t.workout || t.decision || "");
+        });
+        if(priorHard.length >= 2){
+          const latestHard = Math.max(...priorHard.map(t => Date.parse(t.date)));
+          return {
+            location: injury.location,
+            injuryDate: injury.date,
+            daysAfter: Math.max(1, Math.round((injuryTime - latestHard) / 86400000)),
+            hardDays: priorHard.map(t => t.date)
+          };
+        }
+      }
+      return null;
+    }
+
+    function rememberDailyBriefing(briefing, snap){
+      const memory = state.memory;
+      const date = briefing.date || todayKey();
+      const checkin = briefing.checkin || state.checkin;
+      memory.checkins = [...memory.checkins, { date, ...checkin }].slice(-90);
+      memory.trainingHistory = [...memory.trainingHistory, {
+        date,
+        workout: briefing.prescription.type,
+        distance: briefing.prescription.distance,
+        duration: briefing.prescription.duration,
+        readiness: briefing.finalScore,
+        load: snap.acuteLoad,
+        decision: briefing.verdict
+      }].slice(-120);
+      memory.hrvReadings = [...memory.hrvReadings, { date, value: snap.hrv, sleep: snap.sleep, readiness: briefing.finalScore }].slice(-90);
+
+      const injuryLocation = locationFromText(checkin.soreness);
+      if(checkin.pain || injuryLocation){
+        memory.injuryPatterns = [...memory.injuryPatterns, {
+          date,
+          location: injuryLocation || "pain flag",
+          soreness: checkin.soreness || "pain flagged",
+          pain: checkin.pain,
+          readiness: briefing.finalScore,
+          decision: briefing.prescription.type
+        }].slice(-80);
+      }
+
+      const nutritionFlags = briefing.flags.filter(f => f.agent === "Nutrition");
+      if(nutritionFlags.length){
+        memory.nutritionTendencies = [...memory.nutritionTendencies, ...nutritionFlags.map(f => ({
+          date,
+          signal: f.signal,
+          action: f.action
+        }))].slice(-50);
+      }
+
+      memory.coachingDecisions = [...memory.coachingDecisions, {
+        date,
+        decision: `${briefing.verdict}: ${briefing.prescription.type}`,
+        reason: briefing.summary,
+        score: briefing.finalScore
+      }].slice(-80);
+      memory.updatedAt = new Date().toISOString();
+    }
+
+    function rememberChatDecision(query, content, results){
+      const memory = state.memory;
+      const date = todayKey();
+      const q = String(query || "");
+      const lower = q.toLowerCase();
+      if(/pain|injur|sore|tight|ache|achilles|calf|knee|shin|plantar/.test(lower)){
+        memory.injuryPatterns = [...memory.injuryPatterns, {
+          date,
+          location: locationFromText(q) || "chat-reported pain",
+          soreness: q.slice(0, 90),
+          pain: true,
+          readiness: results?.injury?.score || null,
+          decision: results?.injury?.recommendation || "Chat injury-risk coaching"
+        }].slice(-80);
+      }
+      if(/fuel|carb|eat|hydr|gel|calorie|nutrition/.test(lower)){
+        memory.nutritionTendencies = [...memory.nutritionTendencies, {
+          date,
+          signal: q.slice(0, 90),
+          action: results?.nutrition?.recommendation || "Nutrition coaching given in chat"
+        }].slice(-50);
+      }
+      memory.coachingDecisions = [...memory.coachingDecisions, {
+        date,
+        decision: content.split("\\n")[0].slice(0, 110),
+        reason: `User asked: ${q.slice(0, 90)}`,
+        score: results ? Math.round(Object.values(results).reduce((s,r)=>s+(r.score || 0),0) / Object.values(results).length) : null
+      }].slice(-80);
+      memory.updatedAt = new Date().toISOString();
+    }
+
+    function saveManualDataFromForm(){
+      state.manualData = {
+        sleepHours:$("#manual-sleep")?.value.trim() || "",
+        soreness:$("#manual-soreness")?.value.trim() || "",
+        mileage:$("#manual-mileage")?.value.trim() || "",
+        hrv:$("#manual-hrv")?.value.trim() || "",
+        updatedAt:new Date().toISOString()
+      };
+      state.sources.manual = "connected";
+      state.checkin = {
+        ...state.checkin,
+        soreness: state.manualData.soreness || state.checkin.soreness,
+        sleepQuality: state.manualData.sleepHours ? Math.max(1, Math.min(5, Math.round(Number(state.manualData.sleepHours) - 3))) : state.checkin.sleepQuality
+      };
+      computeDaily();
+      saveAppState();
+      showToast("Manual daily data saved and injected into the agents.");
+      render();
+    }
+
+    function generateStravaActivities(){
+      const today = new Date();
+      const names = ["Easy Run", "Progression Run", "Long Run", "Recovery Jog", "Tempo Run", "Easy Run", "Hill Run"];
+      const distances = [5.2, 7.1, 12.4, 3.8, 6.6, 4.9, 5.7];
+      return names.map((name, i) => {
+        const date = new Date(today);
+        date.setDate(today.getDate() - (6 - i));
+        return {
+          id:`fake-strava-${i}`,
+          name,
+          date:date.toISOString().slice(0, 10),
+          distance:distances[i],
+          pace:["8:42/mi","8:05/mi","8:58/mi","9:25/mi","7:28/mi","8:51/mi","8:15/mi"][i],
+          elevation:[85,120,310,42,96,72,180][i],
+          load:Math.round(distances[i] * (name.includes("Tempo") ? 9 : name.includes("Long") ? 7 : 5))
+        };
+      });
+    }
+
+    function stravaSummary(){
+      const activities = state.stravaData?.activities || [];
+      if(!activities.length) return { weeklyMiles:0, loads:[], hardest:null, activityCount:0 };
+      const weeklyMiles = +activities.reduce((sum,a)=>sum + Number(a.distance || 0),0).toFixed(1);
+      const maxLoad = Math.max(...activities.map(a => a.load || 1));
+      const loads = activities.map(a => Math.max(18, Math.min(96, Math.round((a.load || 1) / maxLoad * 92))));
+      const hardest = activities.slice().sort((a,b)=>(b.load || 0) - (a.load || 0))[0];
+      return { weeklyMiles, loads, hardest, activityCount:activities.length };
+    }
+
+    function connectStrava(){
+      state.sources.strava = "connecting";
+      saveAppState();
+      render();
+      setTimeout(() => {
+        state.sources.strava = "connected";
+        state.stravaData = {
+          connected:true,
+          lastSync:new Date().toISOString(),
+          activities:generateStravaActivities()
+        };
+        saveAppState();
+        showToast("Strava connected with sample activity data for this prototype.");
+        render();
+      }, 900);
+    }
+
+    function disconnectStrava(){
+      delete state.sources.strava;
+      state.stravaData = { connected:false, lastSync:null, activities:[] };
+      saveAppState();
+      render();
+    }
+
+    function scoreColor(score){
+      if(score >= 75) return C.accent;
+      if(score >= 55) return C.yellow;
+      return C.red;
+    }
+    function statusFor(score){
+      if(score >= 75) return "green";
+      if(score >= 55) return "yellow";
+      return "red";
+    }
+    function statusLabel(score){
+      if(score >= 75) return "Ready";
+      if(score >= 55) return "Caution";
+      return "Protect";
+    }
+
+    function createAgentResult(id, query){
+      const snap = dataSnapshot();
+      const q = query.toLowerCase();
+      const hardIntent = /hard|interval|tempo|race|workout|fast|speed|long/.test(q);
+      const painIntent = /pain|injur|sore|tight|ache|achilles|knee|calf|shin|plantar/.test(q);
+      const raceIntent = /race|marathon|half|10k|5k|pace|taper/.test(q) || !/no race/i.test(state.profile.raceDate);
+      const fuelIntent = /fuel|eat|carb|hydr|gel|nutrition|calorie/.test(q);
+      const loadRatio = snap.acuteLoad / Math.max(1, snap.chronicLoad);
+      const connected = connectedNames();
+      const sourceText = connected.length ? `Using ${connected.slice(0,3).join(", ")} signals.` : "Using profile and conversation data only.";
+      const memoryText = memoryInsightFor(query);
+
+      if(id === "training"){
+        let score = Math.round(76 - Math.max(0, loadRatio - 1.08) * 90 + (hardIntent ? 2 : 0));
+        score = Math.max(38, Math.min(92, score));
+        return {
+          status: statusFor(score),
+          score,
+          headline: hardIntent ? "Training stimulus is useful, but keep the dose controlled." : "Current load supports steady aerobic progression.",
+          insights:[
+            `${snap.weeklyMileage} mi/week profile suggests a sustainable next-week range of ${Math.round(snap.weeklyMileage*.95)}-${Math.round(snap.weeklyMileage*1.08)} miles.`,
+            `Acute-to-chronic load is ${loadRatio.toFixed(2)}, so the system should avoid stacking hard days.`,
+            sourceText,
+            memoryText
+          ],
+          recommendation: hardIntent ? "Run 10-15 min warmup, 5 x 4 min at threshold effort with 2 min jog, then cool down. Cap total volume near 75 minutes." : "Keep today aerobic: 40-55 minutes easy plus 6 x 20 second relaxed strides if legs feel smooth.",
+          flags: loadRatio > 1.18 ? ["Load spike above preferred progression"] : []
+        };
+      }
+      if(id === "recovery"){
+        let score = Math.round(78 + (snap.hrv - 55) - (snap.sleep < 7 ? 10 : 0) - (hardIntent ? 4 : 0));
+        score = Math.max(35, Math.min(94, score));
+        return {
+          status: statusFor(score),
+          score,
+          headline: score >= 75 ? "Recovery markers support normal training." : score >= 55 ? "Recovery is usable but not robust." : "Recovery is limiting today's ceiling.",
+          insights:[
+            `HRV estimate is ${snap.hrv} ms with ${snap.sleep} hours of sleep.`,
+            score < 65 ? "The recovery agent would reduce intensity before reducing all movement." : "No major autonomic warning is present in the current snapshot.",
+            sourceText,
+            memoryText
+          ],
+          recommendation: score >= 75 ? "Proceed, but keep the final 10 minutes honest about effort." : "Move intensity down one notch: easy running or cross-training, then prioritize sleep tonight.",
+          flags: score < 55 ? ["Low readiness"] : []
+        };
+      }
+      if(id === "nutrition"){
+        let score = Math.round(74 + (fuelIntent ? 6 : 0) - (hardIntent ? 5 : 0));
+        score = Math.max(50, Math.min(91, score));
+        return {
+          status: statusFor(score),
+          score,
+          headline: hardIntent || fuelIntent ? "Fuel timing matters for this session." : "Fuel status looks adequate for routine training.",
+          insights:[
+            `At ${snap.weeklyMileage} mi/week, daily carbohydrate needs likely sit around 4-7 g/kg depending on training stress.`,
+            hardIntent ? "A quality workout should not start under-fueled." : "Normal easy days still need consistent protein and hydration.",
+            sourceText,
+            memoryText
+          ],
+          recommendation: hardIntent ? "Take 30-60 g carbs 60-90 minutes pre-run. For sessions over 75 minutes, add 30-45 g carbs/hour and 400-700 ml fluid/hour." : "Anchor the day with carbs around training and 25-35 g protein within two hours after running.",
+          flags: []
+        };
+      }
+      if(id === "injury"){
+        let score = Math.round(82 - (painIntent ? 28 : 0) - Math.max(0, loadRatio - 1.1) * 110);
+        score = Math.max(28, Math.min(90, score));
+        return {
+          status: statusFor(score),
+          score,
+          headline: painIntent ? "Pain language raises the risk profile." : "No major injury pattern is visible, but load discipline matters.",
+          insights:[
+            `Reported/body signal context: ${snap.soreness}.`,
+            `The current load ratio of ${loadRatio.toFixed(2)} is ${loadRatio > 1.15 ? "above" : "inside"} the preferred progression band.`,
+            sourceText,
+            memoryText
+          ],
+          recommendation: painIntent ? "Skip speedwork for 48 hours. Run only if pain stays 0-2/10 and does not alter stride; otherwise cross-train and reassess." : "Keep hard surfaces and downhill volume modest, and separate hard sessions by at least 48 hours.",
+          flags: painIntent ? ["Pain or tightness mentioned"] : []
+        };
+      }
+      if(id === "race"){
+        let score = Math.round((raceIntent ? 76 : 64) + (state.profile.level === "advanced" ? 6 : 0) - (loadRatio > 1.18 ? 8 : 0));
+        score = Math.max(44, Math.min(92, score));
+        return {
+          status: statusFor(score),
+          score,
+          headline: raceIntent ? "Race goal is plan-worthy, but execution should be conservative early." : "Race strategy is secondary until a target race is firm.",
+          insights:[
+            `Goal context: ${state.profile.goal || "not set"}; race date: ${state.profile.raceDate || "not set"}.`,
+            "Best race outcomes come from matching pacing, taper, and fueling instead of treating them separately.",
+            sourceText,
+            memoryText
+          ],
+          recommendation: raceIntent ? "Use even effort through the first half, avoid banking time, and practice race fueling in the next long run before changing goal pace." : "Set a target distance and date before building a full pacing model.",
+          flags: !raceIntent ? ["No firm race context"] : []
+        };
+      }
+    }
+
+    function detectConflicts(results){
+      const out = [];
+      if(results.training && results.recovery){
+        if(results.training.score >= 70 && results.recovery.score < 60) out.push("Training readiness supports work, but recovery is asking for restraint.");
+      }
+      if(results.training && results.injury){
+        if(results.training.score >= 65 && results.injury.score < 60) out.push("Training stimulus conflicts with elevated injury risk.");
+      }
+      if(results.race && results.nutrition){
+        if(results.race.score >= 70 && results.nutrition.score < 65) out.push("Race execution depends on a fueling plan that is not yet secure.");
+      }
+      return out;
+    }
+
+    function orchestrate(query, results, conflicts){
+      const scores = Object.values(results).map(r => r.score);
+      const readiness = Math.round(scores.reduce((a,b)=>a+b,0) / scores.length);
+      const limiting = Object.entries(results).sort((a,b)=>a[1].score-b[1].score)[0];
+      const best = Object.entries(results).sort((a,b)=>b[1].score-a[1].score)[0];
+      const conflictLine = conflicts.length ? `There is a real conflict: ${conflicts[0]} My ruling is to let ${AGENTS[limiting[0]].short.toLowerCase()} set the ceiling today.` : `The agents are mostly aligned, with ${AGENTS[best[0]].short.toLowerCase()} giving the strongest green light.`;
+      const memoryLine = memoryInsightFor(query);
+      const workout = results.training.recommendation;
+      const recovery = results.recovery.recommendation;
+      const nutrition = results.nutrition.recommendation;
+      const injury = results.injury.recommendation;
+      const race = results.race.recommendation;
+      let answer = `Your unified readiness score is ${readiness}/100: ${statusLabel(readiness).toLowerCase()}.\n\n${conflictLine}\n\n${memoryLine}\n\n`;
+      if(readiness >= 75){
+        answer += `Today can carry useful training. ${workout} ${nutrition}`;
+      } else if(readiness >= 55){
+        answer += `Train, but remove the ego from the session. ${recovery} ${injury}`;
+      } else {
+        answer += `Do not force a hard run today. ${recovery} ${injury}`;
+      }
+      if(/race|pace|marathon|half|10k|5k|taper/i.test(query)) answer += `\n\nFor the race lens: ${race}`;
+      return answer;
+    }
+
+    async function runPipeline(query){
+      const statuses = {};
+      const results = {};
+      AGENT_IDS.forEach(id => statuses[id] = "thinking");
+      state.pipeline = { statuses, results, conflicts:[], orchestrating:false };
+      render();
+
+      await Promise.all(AGENT_IDS.map(async (id, index) => {
+        await sleep(650 + index * 130 + Math.random() * 420);
+        results[id] = createAgentResult(id, query);
+        statuses[id] = "done";
+        state.lastScores[id] = results[id].score;
+        state.pipeline = { statuses:{...statuses}, results:{...results}, conflicts:detectConflicts(results), orchestrating:false };
+        render();
+      }));
+      const conflicts = detectConflicts(results);
+      state.pipeline = { statuses:{...statuses}, results:{...results}, conflicts, orchestrating:true };
+      render();
+      await sleep(700);
+      const content = orchestrate(query, results, conflicts);
+      return { content, results, conflicts };
+    }
+
+    function daysUntilRace(){
+      const raw = String(state.profile.raceDate || "").trim();
+      if(!raw || /no race/i.test(raw)) return null;
+      const parsed = Date.parse(raw);
+      if(Number.isNaN(parsed)) return null;
+      return Math.ceil((parsed - Date.now()) / 86400000);
+    }
+
+    function trainingPhase(){
+      const d = daysUntilRace();
+      if(d === null) return "base";
+      if(d <= 10) return "race week";
+      if(d <= 28) return "peak";
+      if(d <= 70) return "build";
+      return "base";
+    }
+
+    function createDailyAgentResult(id, checkin){
+      const snap = dataSnapshot();
+      const phase = trainingPhase();
+      const sorenessText = checkin.soreness.trim() || snap.soreness;
+      const loadRatio = snap.acuteLoad / Math.max(1, snap.chronicLoad);
+      const connected = connectedNames();
+      const sourceText = connected.length ? `Cross-checked against ${connected.slice(0,3).join(", ")} signals.` : "No live platform feed; weighted from profile plus check-in.";
+      const memory = memorySummary();
+      const recurringLocation = memory.recurringInjury?.location || "";
+      const memoryText = memoryInsightFor(sorenessText);
+      const painPenalty = checkin.pain ? 24 : 0;
+      const memoryPenalty = recurringLocation && sorenessText.toLowerCase().includes(recurringLocation) ? 7 : 0;
+      const sorenessPenalty = (/calf|achilles|knee|shin|plantar|hip|hamstring/i.test(sorenessText) ? 8 : 0) + memoryPenalty;
+      const energyBonus = (Number(checkin.energy) - 3) * 6;
+      const sleepBonus = (Number(checkin.sleepQuality) - 3) * 5;
+      const loadPenalty = Math.max(0, loadRatio - 1.08) * 85;
+
+      if(id === "training"){
+        const score = Math.round(Math.max(35, Math.min(94, 76 + energyBonus - loadPenalty - painPenalty * .35)));
+        const workout = score >= 75
+          ? { type:"Threshold Control", distance:"7-9 miles total", paceZone:"Marathon pace to threshold, controlled", hrCeiling:"88% max HR", duration:"60-75 min", rationale:"Readiness supports quality, but the dose stays sub-maximal so tomorrow remains usable." }
+          : score >= 55
+            ? { type:"Aerobic Maintenance", distance:"4-6 miles", paceZone:"Easy conversational pace", hrCeiling:"75% max HR", duration:"40-55 min", rationale:"The aerobic system gets maintained while fatigue and soreness stay contained." }
+            : { type:"Recovery or Rest", distance:"0-3 miles optional", paceZone:"Very easy only", hrCeiling:"68% max HR", duration:"0-30 min", rationale:"Training benefit is lower than recovery cost today." };
+        return {
+          status: statusFor(score), score,
+          headline: score >= 75 ? "Training can absorb a controlled quality stimulus." : score >= 55 ? "Training should stay aerobic today." : "Training load should give way to recovery.",
+          insights:[
+            `${snap.weeklyMileage} mi/week with an acute/chronic load ratio of ${loadRatio.toFixed(2)}.`,
+            phase === "race week" ? "Race week shifts training toward freshness, not fitness building." : `Current phase reads as ${phase}.`,
+            sourceText,
+            memoryText
+          ],
+          recommendation: workout.rationale,
+          workout,
+          flags:[
+            ...(loadRatio > 1.18 ? [{ agent:"Training", severity:"yellow", signal:"Mileage/load is rising faster than the preferred 10% band.", action:"Cap today's volume and avoid adding bonus miles." }] : []),
+            ...(score < 55 ? [{ agent:"Training", severity:"red", signal:"Training score is below the threshold for useful intensity.", action:"Use rest or a short recovery run instead of a workout." }] : [])
+          ]
+        };
+      }
+
+      if(id === "recovery"){
+        const score = Math.round(Math.max(30, Math.min(96, 74 + sleepBonus + energyBonus * .7 + (snap.hrv - 55) * .55 - painPenalty * .25)));
+        return {
+          status: statusFor(score), score,
+          headline: score >= 75 ? "Recovery state supports the plan." : score >= 55 ? "Recovery is mixed; intensity needs a governor." : "Recovery is the limiting factor.",
+          insights:[
+            `Check-in energy ${checkin.energy}/5 and sleep quality ${checkin.sleepQuality}/5.`,
+            `HRV estimate is ${snap.hrv} ms with ${snap.sleep} hours from the simulated snapshot.`,
+            memory.hrvBaseline ? `Stored HRV baseline is ${memory.hrvBaseline} ms across recent briefings.` : sourceText
+          ],
+          recommendation: score >= 75 ? "Proceed with training while monitoring perceived effort." : score >= 55 ? "Keep the session honest but capped; no late surges." : "Prioritize sleep, nutrition, and low stress before more training stress.",
+          flags:[
+            ...(checkin.sleepQuality <= 2 ? [{ agent:"Recovery", severity:"yellow", signal:"Sleep quality check-in is low.", action:"Remove intensity or shorten the session by 20-30%." }] : []),
+            ...(checkin.energy <= 2 ? [{ agent:"Recovery", severity:"red", signal:"Subjective energy is low before training starts.", action:"Treat this as a recovery-led day." }] : [])
+          ]
+        };
+      }
+
+      if(id === "nutrition"){
+        const highLoad = snap.acuteLoad > snap.weeklyMileage * 1.1;
+        const score = Math.round(Math.max(42, Math.min(92, 73 + energyBonus * .35 - (highLoad ? 6 : 0) - (checkin.sleepQuality <= 2 ? 4 : 0))));
+        return {
+          status: statusFor(score), score,
+          headline: highLoad ? "Fuel availability matters because load is elevated." : "Fuel status is adequate if meals bracket the run.",
+          insights:[
+            `Weekly mileage profile points to roughly 4-7 g/kg carbohydrate on training days.`,
+            checkin.energy <= 2 ? "Low energy can be recovery-driven, fuel-driven, or both." : "No strong underfueling signal appears in the check-in.",
+            memory.nutrition.length ? `Prior nutrition memory: ${memory.nutrition.at(-1).signal}` : sourceText
+          ],
+          recommendation: "Place carbohydrates before the run and protein afterward so the prescription does not create unnecessary recovery debt.",
+          flags:[
+            ...(highLoad && checkin.energy <= 3 ? [{ agent:"Nutrition", severity:"yellow", signal:"High load plus only moderate/low energy can indicate underfueling.", action:"Add 30-60 g carbs before running and eat a full recovery meal afterward." }] : [])
+          ]
+        };
+      }
+
+      if(id === "injury"){
+        const score = Math.round(Math.max(24, Math.min(91, 82 - painPenalty - sorenessPenalty - loadPenalty * .75)));
+        return {
+          status: statusFor(score), score,
+          headline: score >= 75 ? "Injury risk is acceptable with normal guardrails." : score >= 55 ? "Injury risk is elevated enough to alter the day." : "Injury risk should override workout ambition.",
+          insights:[
+            `Soreness report: ${sorenessText}.`,
+            checkin.pain ? "Pain flag is active, so this agent gets veto power over intensity." : "No specific pain flag was entered.",
+            recurringLocation ? `Memory shows ${recurringLocation} has recurred ${memory.recurringInjury.count} time${memory.recurringInjury.count > 1 ? "s" : ""}.` : sourceText
+          ],
+          recommendation: score >= 75 ? "Keep mechanics smooth and stop if pain emerges." : score >= 55 ? "Avoid speed, hills, and aggressive surfaces today." : "Do not run through pain. Cross-train only if it is pain-free.",
+          flags:[
+            ...(checkin.pain ? [{ agent:"Injury Risk", severity:"red", signal:"Specific pain was flagged in the morning check-in.", action:"No hard running; run only if pain stays 0-2/10 and gait is unchanged." }] : []),
+            ...(sorenessPenalty ? [{ agent:"Injury Risk", severity:memoryPenalty ? "red" : "yellow", signal:`Soreness location needs watching: ${sorenessText}.`, action:memoryPenalty ? "This matches stored history, so do not stack hard days until it clears." : "Shorten the route and avoid hills or speed until it settles." }] : [])
+          ]
+        };
+      }
+
+      const d = daysUntilRace();
+      const raceWeek = phase === "race week";
+      const score = Math.round(Math.max(42, Math.min(94, (d === null ? 64 : 77) + (raceWeek ? sleepBonus * 1.2 : energyBonus * .35) - painPenalty * .3)));
+      return {
+        status: statusFor(score), score,
+        headline: d === null ? "Race strategy is background context until a target date is firm." : raceWeek ? "Race week rewards freshness over proving fitness." : "Race goal remains viable if today supports the larger arc.",
+        insights:[
+          d === null ? "No parsed race date is available." : `${d} days until the target race.`,
+          raceWeek ? "Recovery and race execution receive extra orchestrator weight this week." : `The current phase reads as ${phase}.`,
+          memory.decisions.length ? `Recent coaching memory: ${memory.decisions.at(-1).decision}` : sourceText
+        ],
+        recommendation: raceWeek ? "Keep the legs responsive, not tired. Nothing today should create soreness 48 hours from now." : "Let today's session support race specificity without forcing race effort.",
+        flags:[
+          ...(raceWeek && score < 65 ? [{ agent:"Race Strategy", severity:"yellow", signal:"Race-week freshness is not ideal.", action:"Cut volume first, intensity second; arrive rested." }] : [])
+        ]
+      };
+    }
+
+    function dailyWeights(){
+      const phase = trainingPhase();
+      if(phase === "race week") return { training:.16, recovery:.30, nutrition:.16, injury:.18, race:.20 };
+      if(phase === "base") return { training:.24, recovery:.22, nutrition:.14, injury:.26, race:.14 };
+      if(phase === "peak") return { training:.22, recovery:.25, nutrition:.15, injury:.20, race:.18 };
+      return { training:.25, recovery:.23, nutrition:.14, injury:.22, race:.16 };
+    }
+
+    function orchestrateDaily(results, checkin){
+      const weights = dailyWeights();
+      let finalScore = AGENT_IDS.reduce((sum, id) => sum + results[id].score * weights[id], 0);
+      if(checkin.pain) finalScore = Math.min(finalScore, 58);
+      if(checkin.energy <= 2 && checkin.sleepQuality <= 2) finalScore = Math.min(finalScore, 54);
+      finalScore = Math.round(Math.max(25, Math.min(96, finalScore)));
+      const topFlags = AGENT_IDS.flatMap(id => results[id].flags || [])
+        .sort((a,b) => ({ red:0, yellow:1, green:2 }[a.severity] - { red:0, yellow:1, green:2 }[b.severity]))
+        .slice(0, 5);
+      if(!topFlags.length) topFlags.push({ agent:"Orchestrator", severity:"green", signal:"No major cross-domain red flags surfaced.", action:"Use the prescription as written and keep effort controlled." });
+      const trainingRx = results.training.workout;
+      const verdict = finalScore >= 75 ? "Green light, controlled ambition" : finalScore >= 55 ? "Yellow light, earn tomorrow" : "Red light, protect the body";
+      const summary = finalScore >= 75
+        ? "The system sees enough recovery and low enough risk to train with purpose, but it still caps the session below hero effort."
+        : finalScore >= 55
+          ? "The useful move is to preserve rhythm without forcing adaptation. Today should make the next session better, not harder."
+          : "The coaching decision is restraint. Recovery, tissue status, and subjective check-in signals outweigh the value of a workout.";
+      return {
+        date: new Date().toISOString().slice(0, 10),
+        finalScore,
+        verdict,
+        summary,
+        prescription: trainingRx,
+        flags: topFlags,
+        agentResults: results,
+        weights,
+        checkin:{ ...checkin }
+      };
+    }
+
+    async function runDailyBriefing(){
+      if(state.loading) return;
+      state.loading = true;
+      const statuses = {};
+      const results = {};
+      AGENT_IDS.forEach(id => statuses[id] = "thinking");
+      state.pipeline = { statuses, results, conflicts:[], orchestrating:false };
+      state.todayBriefing = null;
+      render();
+
+      const checkin = { ...state.checkin };
+      await Promise.all(AGENT_IDS.map(async (id, index) => {
+        await sleep(620 + index * 140 + Math.random() * 360);
+        results[id] = createDailyAgentResult(id, checkin);
+        statuses[id] = "done";
+        state.lastScores[id] = results[id].score;
+        state.pipeline = { statuses:{...statuses}, results:{...results}, conflicts:detectConflicts(results), orchestrating:false };
+        render();
+      }));
+
+      state.pipeline = { statuses:{...statuses}, results:{...results}, conflicts:detectConflicts(results), orchestrating:true };
+      render();
+      await sleep(650);
+      const briefing = orchestrateDaily(results, checkin);
+      const snap = dataSnapshot();
+      state.todayBriefing = briefing;
+      state.daily = {
+        score: briefing.finalScore,
+        verdict: briefing.verdict,
+        recommendation: briefing.summary,
+        workout: briefing.prescription.type,
+        details: `${briefing.prescription.distance}; ${briefing.prescription.paceZone}; HR ceiling ${briefing.prescription.hrCeiling}.`
+      };
+      state.readinessHistory = [
+        ...state.readinessHistory.slice(-29),
+        { date: briefing.date, score: briefing.finalScore, load: snap.acuteLoad, redFlag: briefing.flags.some(f => f.severity === "red") }
+      ];
+      rememberDailyBriefing(briefing, snap);
+      state.loading = false;
+      state.pipeline = null;
+      saveAppState();
+      render();
+    }
+
+    function computeDaily(){
+      const snap = dataSnapshot();
+      const readiness = Math.round((snap.hrv * .7) + (snap.sleep * 5) + 12 - Math.max(0, snap.acuteLoad - snap.chronicLoad) * .45);
+      const score = Math.max(38, Math.min(92, readiness));
+      state.daily = {
+        score,
+        verdict: score >= 75 ? "Green Light" : score >= 55 ? "Controlled Day" : "Recovery Priority",
+        recommendation: score >= 75 ? "Quality work is available today. Keep warmup honest and stop before form deteriorates." : score >= 55 ? "Run easy or moderate only. Save race-specific work for a cleaner recovery signal." : "Replace intensity with recovery running, mobility, or a full rest day.",
+        workout: score >= 75 ? "Threshold Control Session" : score >= 55 ? "Aerobic Maintenance Run" : "Recovery Reset",
+        details: score >= 75 ? "15 min warmup, 3 x 8 min steady threshold with 3 min jog, 10 min cool down." : score >= 55 ? "40-55 minutes easy, finish with mobility. No pace target." : "20-35 minutes very easy only if it improves how you feel."
+      };
+    }
+
+    function startApp(){
+      computeDaily();
+      const names = connectedNames();
+      const sourceLine = names.length ? `Data sources active: ${names.join(", ")}.` : "No app sources connected yet; use the Data tab for manual inputs or Strava.";
+      if(!state.messages.length){
+        state.messages = [{
+          role:"assistant",
+          content:`Hey ${state.profile.name}. Profile locked in: ${state.profile.weeklyMiles} per week, goal is ${state.profile.goal}. ${sourceLine}\n\nFor Stage 6 Lite, I use manual sleep, soreness, mileage, and HRV first, plus Strava run logs when connected. I still keep local memory of check-ins, injury patterns, fueling signals, baselines, and coaching decisions.`
+        }];
+      }
+      state.phase = "app";
+      state.view = "today";
+      saveAppState();
+      render();
+    }
+
+    async function sendMessage(text){
+      const input = text ?? $("#composer-input")?.value ?? "";
+      const content = input.trim();
+      if(!content || state.loading) return;
+      state.messages.push({ role:"user", content });
+      state.loading = true;
+      state.pipeline = null;
+      render();
+      await sleep(220);
+      const response = await runPipeline(content);
+      state.messages.push({ role:"assistant", content:response.content, pipeline:{ results:response.results, conflicts:response.conflicts } });
+      rememberChatDecision(content, response.content, response.results);
+      state.loading = false;
+      state.pipeline = null;
+      computeDaily();
+      saveAppState();
+      render();
+    }
+
+    function connectSource(id){
+      if(id === "strava") return connectStrava();
+      if(id === "manual"){
+        state.sources.manual = "connected";
+        state.view = "data";
+        saveAppState();
+        render();
+        return;
+      }
+      if(state.sources[id]) return;
+      state.sources[id] = "connecting";
+      saveAppState();
+      render();
+      setTimeout(() => {
+        state.sources[id] = "connected";
+        saveAppState();
+        render();
+      }, 850 + Math.random()*500);
+    }
+    function disconnectSource(id){
+      if(id === "strava") return disconnectStrava();
+      delete state.sources[id];
+      saveAppState();
+      render();
+    }
+
+    function render(){
+      if(state.phase === "welcome") return renderWelcome();
+      if(state.phase === "onboard") return renderOnboard();
+      if(state.phase === "level") return renderLevel();
+      if(state.phase === "sources") return renderSources();
+      return renderShell();
+    }
+
+    function renderWelcome(){
+      app.innerHTML = `
+        <section class="center-screen">
+          <div class="welcome">
+            <div class="brand">PACE</div>
+            <div class="rule"></div>
+            <div class="kicker">AI body management for distance runners</div>
+            <div class="copy">Five specialist agents reason across training, recovery, nutrition, injury risk, and race strategy, then an orchestrator turns the signal into one decision.</div>
+            <button class="primary" id="start">Get Started <span>→</span></button>
+          </div>
+        </section>`;
+      $("#start").onclick = () => { state.phase = "onboard"; render(); setTimeout(()=>$("#step-input")?.focus(),0); };
+    }
+
+    function renderOnboard(){
+      const curr = ONBOARDING[state.step];
+      const pct = ((state.step + 1) / (ONBOARDING.length + 2)) * 100;
+      app.innerHTML = `
+        <div class="progress"><span style="width:${pct}%"></span></div>
+        <section class="center-screen">
+          <div class="step-card">
+            <div class="step-count">${state.step + 1} of ${ONBOARDING.length + 2}</div>
+            <div class="step-title">${esc(curr.q)}</div>
+            <input id="step-input" class="step-input" value="${esc(state.temp)}" placeholder="${esc(curr.ph)}" />
+            <button id="next-step" class="primary" style="margin-top:24px" ${state.temp.trim() ? "" : "disabled"}>Continue <span>→</span></button>
+          </div>
+        </section>`;
+      const input = $("#step-input");
+      input.oninput = e => { state.temp = e.target.value; $("#next-step").disabled = !state.temp.trim(); };
+      input.onkeydown = e => { if(e.key === "Enter") advanceStep(); };
+      $("#next-step").onclick = advanceStep;
+      setTimeout(()=>input.focus(),0);
+    }
+    function advanceStep(){
+      if(!state.temp.trim()) return;
+      state.profile[ONBOARDING[state.step].field] = state.temp.trim();
+      state.temp = "";
+      if(state.step < ONBOARDING.length - 1) state.step += 1;
+      else state.phase = "level";
+      render();
+    }
+
+    function renderLevel(){
+      const pct = ((ONBOARDING.length + 1) / (ONBOARDING.length + 2)) * 100;
+      app.innerHTML = `
+        <div class="progress"><span style="width:${pct}%"></span></div>
+        <section class="center-screen">
+          <div class="step-card">
+            <div class="step-count">${ONBOARDING.length + 1} of ${ONBOARDING.length + 2}</div>
+            <div class="step-title">Your running experience?</div>
+            <div class="level-grid">
+              ${LEVELS.map(l => `<button class="level-card" data-level="${l.value}"><strong>${l.label}</strong><span>${l.note}</span></button>`).join("")}
+            </div>
+          </div>
+        </section>`;
+      document.querySelectorAll("[data-level]").forEach(btn => btn.onclick = () => {
+        state.profile.level = btn.dataset.level;
+        state.phase = "sources";
+        render();
+      });
+    }
+
+    function renderSources(){
+      app.innerHTML = `
+        <div class="progress"><span style="width:100%"></span></div>
+        <section class="sources-screen">
+          <div class="sources-wrap">
+            <h1 class="screen-title">Connect your platforms</h1>
+            <p class="screen-sub">Fake Stage 6 starts with manual daily data and Strava only. Garmin, WHOOP, Apple Health, and the rest stay parked for later.</p>
+            <div class="sources-grid">${sourceCardsHtml()}</div>
+            <div class="sources-footer">
+              <button class="primary" id="launch">${connectedIds().length ? "Launch PACE" : "Continue Without Data"} <span>→</span></button>
+              <button class="ghost" id="skip">Skip for now</button>
+            </div>
+          </div>
+        </section>`;
+      bindSourceCards();
+      $("#launch").onclick = startApp;
+      $("#skip").onclick = () => { state.sources = {}; startApp(); };
+    }
+
+    function sourceCardsHtml(){
+      const agentLabels = { training:"Training", recovery:"Recovery", nutrition:"Nutrition", injury:"Injury", race:"Race" };
+      return DATA_SOURCES.map(src => {
+        const st = state.sources[src.id] || "";
+        return `<button class="source-card ${st}" data-source="${src.id}">
+          <div class="source-top">
+            <span class="source-icon" style="color:${src.color}">${src.icon}</span>
+            <span class="status-dot ${st}">${st === "connected" ? "✓" : ""}</span>
+          </div>
+          <div class="source-name">${src.name}</div>
+          <div class="source-signals">${src.signals.slice(0,4).join(" · ")}</div>
+          <div class="tag-row">${src.agents.map(a => `<span class="tag">${agentLabels[a]}</span>`).join("")}</div>
+          <div class="source-action">${st === "connected" ? "Connected" : st === "connecting" ? "Connecting..." : src.id === "manual" ? "Open manual input form" : "Connect Strava"}</div>
+        </button>`;
+      }).join("");
+    }
+    function bindSourceCards(){
+      document.querySelectorAll("[data-source]").forEach(btn => btn.onclick = () => {
+        const id = btn.dataset.source;
+        if(id === "strava") connectStrava();
+        else {
+          state.sources.manual = "connected";
+          state.view = "data";
+          saveAppState();
+          render();
+        }
+      });
+    }
+
+    function renderShell(){
+      app.innerHTML = `
+        <div class="shell">
+          ${sidebarHtml()}
+          <main class="main">
+            ${topbarHtml()}
+            <section class="view">${state.view === "dashboard" ? dashboardHtml() : state.view === "today" ? todayHtml() : state.view === "data" ? dataHtml() : state.view === "memory" ? memoryHtml() : chatHtml()}</section>
+          </main>
+        </div>
+        ${state.modal ? modalHtml() : ""}`;
+      bindShell();
+      const messages = $(".messages");
+      if(messages) messages.scrollTop = messages.scrollHeight;
+      const textarea = $("#composer-input");
+      if(textarea) textarea.focus();
+    }
+
+    function sidebarHtml(){
+      return `<aside class="sidebar">
+        <div class="side-logo">PACE</div>
+        <div class="profile">
+          <div class="profile-name">${esc(state.profile.name)}</div>
+          <div class="profile-meta">${esc(state.profile.weeklyMiles)} · ${esc(state.profile.level)}</div>
+          <div class="profile-goal">${esc(state.profile.goal)}</div>
+        </div>
+        <nav class="nav">
+          ${navButton("today","Today","◷")}
+          ${navButton("data","Data","▤")}
+          ${navButton("dashboard","Dashboard","▦")}
+          ${navButton("memory","Memory","◫")}
+          ${navButton("chat","Coach Chat","✦")}
+        </nav>
+        <div class="side-section grow">
+          <div class="side-label">Agents</div>
+          ${AGENT_IDS.map(id => {
+            const a = AGENTS[id];
+            const status = state.pipeline?.statuses?.[id];
+            const active = status || state.lastScores[id] !== null;
+            const score = state.lastScores[id] === null ? "--" : state.lastScores[id];
+            return `<div class="agent-row ${active ? "active" : ""}">
+              <span class="dot ${status === "thinking" ? "thinking" : ""}" style="background:${active ? a.color : "#303030"};color:${a.color}"></span>
+              <span class="agent-name">${a.short}</span>
+              <span class="agent-score">${score}</span>
+            </div>`;
+          }).join("")}
+        </div>
+        <div class="side-section">
+          <div class="side-label">Data Sources</div>
+          ${connectedIds().length ? connectedIds().map(id => {
+            const src = DATA_SOURCES.find(s => s.id === id);
+            return `<div class="data-row"><span class="dot" style="background:${src.color}"></span><span>${src.name}</span></div>`;
+          }).join("") : `<div style="color:var(--muted);font-size:11px;line-height:1.5">No platforms connected</div>`}
+          <button class="ghost" id="manage-sources" style="margin-top:10px;width:100%">Manage</button>
+        </div>
+        <div class="footer-note">
+          Stage 6 Lite application<br><span style="color:var(--accent)">●</span> Manual data + Strava first
+          <button class="install-app" id="install-app">Install PACE</button>
+        </div>
+      </aside>`;
+    }
+    function navButton(view,label,icon){
+      return `<button data-view="${view}" class="${state.view === view ? "active" : ""}"><span>${icon}</span>${label}</button>`;
+    }
+    function topbarHtml(){
+      const title = state.view === "dashboard" ? "Runner Dashboard" : state.view === "today" ? "Morning Briefing" : state.view === "data" ? "Data Inputs" : state.view === "memory" ? "Runner Memory" : "Multi-Agent Coach";
+      const sub = state.loading && state.pipeline ? `${Object.values(state.pipeline.statuses).filter(s=>s==="done").length}/5 agents responded${state.pipeline.orchestrating ? " · orchestrating" : ""}` : "Training · Recovery · Nutrition · Injury Risk · Race Strategy";
+      return `<header class="topbar">
+        <div><div class="top-title">${title}</div><div class="top-sub">${sub}</div></div>
+        <div class="top-agents">${AGENT_IDS.map(id => {
+          const a = AGENTS[id], st = state.pipeline?.statuses?.[id];
+          return `<span class="tiny-dot" style="background:${st ? a.color : "#2a2a2a"};box-shadow:${st==="done" ? `0 0 7px ${a.color}` : "none"}"></span>`;
+        }).join("")}</div>
+      </header>`;
+    }
+
+    function dashboardHtml(){
+      const daily = state.daily || { score:72, verdict:"Controlled Day", recommendation:"Build from the current signals.", workout:"Aerobic Maintenance", details:"45 minutes easy." };
+      const snap = dataSnapshot();
+      const insights = defaultInsights();
+      return `<div class="dashboard-grid">
+        <section>
+          <h2 class="section-title">Key Metrics</h2>
+          <div class="metrics">
+            ${metricCard("VO2 Max", snap.vo2, "+1.2", [8,13,11,15,17,16,22])}
+            ${metricCard("HRV", `${snap.hrv} ms`, snap.hrv > 55 ? "+4%" : "-6%", [18,17,20,15,19,22,21])}
+            ${metricCard("Weekly Load", snap.acuteLoad, `${Math.round((snap.acuteLoad/snap.chronicLoad-1)*100)}%`, [9,12,19,13,21,18,24])}
+          </div>
+        </section>
+        <section class="readiness-card">
+          <h2 class="section-title">Morning Briefing</h2>
+          <div class="score-wrap">
+            <div class="ring" style="--score:${daily.score};color:${scoreColor(daily.score)}"><strong>${daily.score}</strong></div>
+            <div>
+              <div class="verdict">${daily.verdict}</div>
+              <div class="recommend">${daily.recommendation}</div>
+            </div>
+          </div>
+        </section>
+        <section class="week-card">
+          <h2 class="section-title">7-Day Load</h2>
+          <div class="week-bars">${weekBarsHtml(snap.sevenDayLoad)}</div>
+        </section>
+        <section class="workout-card">
+          <div class="workout-type">Today's Workout</div>
+          <div class="workout-title">${daily.workout}</div>
+          <div class="workout-details">${daily.details}<br><br>Coach note: ${daily.recommendation}</div>
+        </section>
+        <section class="grid-full">
+          <h2 class="section-title">Agent Insights</h2>
+          <div class="insights">${insights.map(insightCard).join("")}</div>
+        </section>
+      </div>`;
+    }
+    function metricCard(label,value,delta,points){
+      return `<div class="metric-card">
+        <div class="metric-top"><div class="metric-label">${label}</div><div class="badge">${delta}</div></div>
+        <div class="metric-value">${value}</div>
+        <svg class="spark" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline points="${sparkPoints(points)}"></polyline></svg>
+      </div>`;
+    }
+    function sparkPoints(points){
+      const max = Math.max(...points), min = Math.min(...points);
+      return points.map((p,i) => `${(i/(points.length-1))*100},${30 - ((p-min)/Math.max(1,max-min))*24}`).join(" ");
+    }
+    function weekBarsHtml(loads){
+      const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+      return loads.map((load,i) => `<div class="day">
+        <div class="bar-track"><div class="bar-fill" style="height:${load}%"></div></div>
+        <div class="day-label">${days[i]}</div>
+        <div class="day-load">${load}</div>
+      </div>`).join("");
+    }
+    function defaultInsights(){
+      const daily = state.daily || { score:72 };
+      return [
+        { agent:"Training", color:C.accent, badge:daily.score>=70?"Optimal":"Modified", title:"Load is productive if intensity stays controlled.", copy:"Your week can absorb aerobic volume, but stacking hard efforts would reduce the benefit." },
+        { agent:"Recovery", color:C.cyan, badge:daily.score>=75?"Green":"Watch", title:"Readiness sets today's ceiling.", copy:"Sleep and HRV are weighted before workout ambition, so the plan adapts around the body first." },
+        { agent:"Nutrition", color:C.orange, badge:"Fuel", title:"Quality sessions need carbohydrate support.", copy:"Pre-run carbs and post-run protein timing are the easiest wins for the next training block." },
+        { agent:"Injury Risk", color:C.red, badge:"Monitor", title:"Progression discipline protects consistency.", copy:"The system is watching load spikes, pain language, and repeat stress before recommending speed." }
+      ];
+    }
+    function insightCard(x){
+      return `<div class="insight-card">
+        <div class="insight-head"><div class="insight-agent" style="color:${x.color}">${x.agent}</div><div class="badge">${x.badge}</div></div>
+        <div class="insight-title">${x.title}</div>
+        <div class="insight-copy">${x.copy}</div>
+      </div>`;
+    }
+
+    function todayHtml(){
+      const briefing = state.todayBriefing;
+      const today = new Date().toLocaleDateString(undefined, { weekday:"long", month:"long", day:"numeric" });
+      return `<div class="today-report">
+        <div class="report-paper">
+          <div class="report-head">
+            <div>
+              <div class="report-date">${today}</div>
+              <div class="report-title">Morning Coaching Briefing</div>
+            </div>
+            <div class="report-actions">
+              <button class="ghost" id="refresh-briefing" ${state.loading ? "disabled" : ""}>Refresh</button>
+            </div>
+          </div>
+          ${checkinHtml()}
+          ${state.loading ? briefingLoadingHtml() : briefing ? briefingHtml(briefing) : briefingEmptyHtml()}
+        </div>
+      </div>`;
+    }
+
+    function checkinHtml(){
+      const c = state.checkin;
+      const manual = state.manualData || {};
+      return `<form class="checkin" id="checkin-form">
+        <h2 class="section-title">Daily Check-In</h2>
+        <div class="brief-copy">The agents now combine this check-in with manual Stage 6 data: sleep ${manual.sleepHours || "--"}h, HRV ${manual.hrv || "--"}, mileage ${manual.mileage || state.profile.weeklyMiles || "--"}, soreness ${manual.soreness || "not entered"}.</div>
+        <div class="checkin-grid">
+          <div class="field">
+            <label for="energy">Energy <small>${c.energy}/5</small></label>
+            <input id="energy" name="energy" type="range" min="1" max="5" step="1" value="${c.energy}">
+          </div>
+          <div class="field">
+            <label for="sleepQuality">Sleep quality <small>${c.sleepQuality}/5</small></label>
+            <input id="sleepQuality" name="sleepQuality" type="range" min="1" max="5" step="1" value="${c.sleepQuality}">
+          </div>
+          <div class="field">
+            <label for="soreness">Soreness location and intensity <small>optional</small></label>
+            <input id="soreness" name="soreness" type="text" value="${esc(c.soreness)}" placeholder="left calf, mild">
+          </div>
+          <div class="field">
+            <label>Pain flag <small>${c.pain ? "on" : "off"}</small></label>
+            <div class="toggle-row">
+              <input id="pain" name="pain" type="checkbox" ${c.pain ? "checked" : ""}>
+              <span>Specific pain that should change today's plan</span>
+            </div>
+          </div>
+        </div>
+        <button class="primary" style="margin-top:14px" ${state.loading ? "disabled" : ""}>Run Morning Briefing <span>→</span></button>
+      </form>`;
+    }
+
+    function briefingEmptyHtml(){
+      return `<div class="briefing-body">
+        <div class="hero-brief">
+          <div class="big-score" style="--score:0;--score-color:#333"><strong>--</strong></div>
+          <div>
+            <div class="verdict-line">Ready when you check in.</div>
+            <div class="brief-copy">PACE will run Training, Recovery, Nutrition, Injury Risk, and Race Strategy together, then the orchestrator will produce one readiness score, one prescription, and the top flags for today.</div>
+          </div>
+        </div>
+        ${historyChartHtml()}
+      </div>`;
+    }
+
+    function briefingLoadingHtml(){
+      return `<div class="briefing-loading">
+        ${pipelineShellHtml(state.pipeline?.results || {}, state.pipeline?.statuses || Object.fromEntries(AGENT_IDS.map(id=>[id,"thinking"])), state.pipeline?.conflicts || [], state.pipeline?.orchestrating)}
+      </div>`;
+    }
+
+    function briefingHtml(briefing){
+      const rx = briefing.prescription;
+      return `<div class="briefing-body">
+        <section class="hero-brief">
+          <div class="big-score" style="--score:${briefing.finalScore};--score-color:${scoreColor(briefing.finalScore)}"><strong>${briefing.finalScore}</strong></div>
+          <div>
+            <div class="verdict-line">${briefing.verdict}</div>
+            <div class="brief-copy">${briefing.summary}</div>
+          </div>
+        </section>
+        <section class="brief-grid">
+          <div class="prescription">
+            <div class="prescription-title">Today's Workout Prescription</div>
+            <div class="workout-name">${esc(rx.type)}</div>
+            <div class="rx-grid">
+              <div class="rx-cell"><span>Distance</span><strong>${esc(rx.distance)}</strong></div>
+              <div class="rx-cell"><span>Duration</span><strong>${esc(rx.duration)}</strong></div>
+              <div class="rx-cell"><span>Pace zone</span><strong>${esc(rx.paceZone)}</strong></div>
+              <div class="rx-cell"><span>HR ceiling</span><strong>${esc(rx.hrCeiling)}</strong></div>
+            </div>
+            <div class="brief-copy">${esc(rx.rationale)}</div>
+          </div>
+          <div>
+            <h2 class="section-title">Top Flags</h2>
+            <div class="flag-list">${briefing.flags.map(reportFlagHtml).join("")}</div>
+          </div>
+        </section>
+        <section>
+          <h2 class="section-title">Agent-by-Agent Assessment</h2>
+          <div class="agent-compact">${AGENT_IDS.map(id => compactAgentHtml(id, briefing.agentResults[id])).join("")}</div>
+        </section>
+        ${historyChartHtml()}
+      </div>`;
+    }
+
+    function reportFlagHtml(flag){
+      return `<div class="flag-card ${flag.severity || "yellow"}">
+        <div class="flag-meta">${esc(flag.agent)}</div>
+        <div class="flag-signal">${esc(flag.signal)}</div>
+        <div class="flag-action">${esc(flag.action)}</div>
+      </div>`;
+    }
+
+    function compactAgentHtml(id, result){
+      const agent = AGENTS[id];
+      return `<div class="compact-card">
+        <div class="compact-name" style="color:${agent.color}">${agent.short}</div>
+        <div class="compact-score">${result.score}</div>
+        <div class="compact-headline">${esc(result.headline)}</div>
+      </div>`;
+    }
+
+    function historyChartHtml(){
+      const history = state.readinessHistory;
+      return `<section>
+        <h2 class="section-title">30-Day Readiness vs Training Load</h2>
+        <div class="history-chart">
+          <svg class="dual-chart" viewBox="0 0 720 250" preserveAspectRatio="none">
+            <rect class="green-zone" x="0" y="25" width="720" height="75"></rect>
+            ${[25,75,125,175,225].map(y=>`<line class="grid" x1="0" y1="${y}" x2="720" y2="${y}"></line>`).join("")}
+            <polyline class="load-line" points="${historyLinePoints(history, "load", 20, 95)}"></polyline>
+            <polyline class="score-line" points="${historyLinePoints(history, "score", 30, 100)}"></polyline>
+            ${history.map((d,i) => d.redFlag ? `<circle class="red-marker" cx="${historyX(i, history.length)}" cy="${historyY(d.score, 30, 100)}" r="4"></circle>` : "").join("")}
+          </svg>
+          <div class="chart-legend">
+            <span><span class="legend-dot" style="background:var(--accent)"></span>Readiness score</span>
+            <span><span class="legend-dot" style="background:var(--cyan)"></span>Training load</span>
+            <span><span class="legend-dot" style="background:var(--red)"></span>Red-flag day</span>
+            <span style="margin-left:auto">${esc(history[0]?.date)} to ${esc(history[history.length - 1]?.date)}</span>
+          </div>
+        </div>
+      </section>`;
+    }
+
+    function historyX(index, length){
+      return length <= 1 ? 0 : (index / (length - 1)) * 720;
+    }
+    function historyY(value, min, max){
+      return 225 - ((value - min) / Math.max(1, max - min)) * 200;
+    }
+    function historyLinePoints(values, key, min, max){
+      return values.map((v,i) => `${historyX(i, values.length)},${historyY(v[key], min, max)}`).join(" ");
+    }
+
+    function dataHtml(){
+      const manual = state.manualData || {};
+      const strava = state.stravaData || { connected:false, activities:[] };
+      const summary = stravaSummary();
+      return `<div class="data-console">
+        <div class="report-head" style="border:1px solid var(--border);border-radius:8px;background:var(--panel)">
+          <div>
+            <div class="report-date">Fake Stage 6</div>
+            <div class="report-title">Manual Data + Strava First</div>
+            <div class="brief-copy" style="margin-top:8px">Enter the four signals PACE needs today, then optionally connect Strava for run-log context. Other platforms are intentionally hidden until later.</div>
+          </div>
+          <div class="report-actions"><button class="ghost" id="sync-strava">${strava.connected ? "Resync Strava" : "Connect Strava"}</button></div>
+        </div>
+        <div class="data-grid">
+          <form class="data-panel" id="manual-data-form">
+            <h2 class="section-title">Manual Daily Inputs</h2>
+            <div class="manual-grid">
+              <div class="manual-field">
+                <label for="manual-sleep">Sleep hours</label>
+                <input id="manual-sleep" inputmode="decimal" placeholder="7.4" value="${esc(manual.sleepHours || "")}">
+              </div>
+              <div class="manual-field">
+                <label for="manual-hrv">HRV</label>
+                <input id="manual-hrv" inputmode="numeric" placeholder="58" value="${esc(manual.hrv || "")}">
+              </div>
+              <div class="manual-field">
+                <label for="manual-mileage">Weekly mileage</label>
+                <input id="manual-mileage" inputmode="decimal" placeholder="45" value="${esc(manual.mileage || "")}">
+              </div>
+              <div class="manual-field">
+                <label>Last updated</label>
+                <input disabled value="${manual.updatedAt ? new Date(manual.updatedAt).toLocaleString() : "Not saved yet"}">
+              </div>
+              <div class="manual-field full">
+                <label for="manual-soreness">Soreness</label>
+                <textarea id="manual-soreness" placeholder="left calf, mild">${esc(manual.soreness || "")}</textarea>
+              </div>
+            </div>
+            <button class="primary" style="margin-top:14px">Save Manual Data <span>→</span></button>
+          </form>
+          <section class="data-panel">
+            <h2 class="section-title">Strava</h2>
+            <div class="source-big ${strava.connected ? "connected" : ""}">
+              <div class="source-big-head">
+                <div>
+                  <div class="source-big-title" style="color:#fc4c02">Strava ${strava.connected ? "Connected" : "Not Connected"}</div>
+                  <div class="source-big-copy">${strava.connected ? `${summary.activityCount} recent activities · ${summary.weeklyMiles} miles this week` : "Prototype OAuth is simulated here. Production Strava requires an app, OAuth redirect handling, token storage, and API calls from a backend."}</div>
+                </div>
+                <button class="ghost" id="${strava.connected ? "disconnect-strava" : "connect-strava"}">${strava.connected ? "Disconnect" : "Connect"}</button>
+              </div>
+              ${strava.connected ? stravaActivitiesHtml(strava.activities) : `<div class="memory-empty">Connect Strava to seed recent run logs into Training and Race Strategy. No Garmin/WHOOP/Apple Health integrations are shown in this stage.</div>`}
+            </div>
+          </section>
+        </div>
+      </div>`;
+    }
+
+    function stravaActivitiesHtml(activities){
+      return `<div class="activity-list">${activities.map(a => `<div class="activity-row">
+        <div><strong>${esc(a.name)}</strong><div class="activity-meta">${esc(a.date)} · ${a.pace} · ${a.elevation} ft gain</div></div>
+        <div>${a.distance} mi</div>
+      </div>`).join("")}</div>`;
+    }
+
+    function memoryHtml(){
+      const memory = state.memory || seedMemory();
+      const summary = memorySummary();
+      const recentDecisions = memory.coachingDecisions.slice(-8).reverse();
+      const injuries = memory.injuryPatterns.slice(-8).reverse();
+      const nutrition = memory.nutritionTendencies.slice(-6).reverse();
+      const hrv = memory.hrvReadings.slice(-8).reverse();
+      return `<div>
+        <div class="report-head" style="border:1px solid var(--border);border-radius:8px;background:var(--panel);margin-bottom:14px">
+          <div>
+            <div class="report-date">Stage 4</div>
+            <div class="report-title">Conversational Memory</div>
+            <div class="brief-copy" style="margin-top:8px">PACE now carries context across sessions in this browser: training history, check-ins, injury patterns, nutrition tendencies, HRV baseline, and prior coaching decisions.</div>
+          </div>
+          <div class="report-actions"><button class="ghost" id="reset-memory">Clear Memory</button></div>
+        </div>
+        <div class="memory-grid">
+          <div class="memory-card"><h3>Training History</h3><strong>${summary.totalRuns}</strong><p>Stored briefing prescriptions and loads from prior days.</p></div>
+          <div class="memory-card"><h3>Recurring Injury</h3><strong>${summary.recurringInjury ? esc(summary.recurringInjury.location) : "None"}</strong><p>${summary.recurringInjury ? `${summary.recurringInjury.count} remembered report${summary.recurringInjury.count > 1 ? "s" : ""}.` : "No recurring pain pattern yet."}</p></div>
+          <div class="memory-card"><h3>HRV Baseline</h3><strong>${summary.hrvBaseline ? `${summary.hrvBaseline} ms` : "--"}</strong><p>Rolling baseline from stored morning briefings.</p></div>
+          <div class="memory-card"><h3>Low Days</h3><strong>${summary.lowReadiness}</strong><p>Readiness scores below 60 in the recent history window.</p></div>
+        </div>
+        ${summary.hardToInjury ? `<section class="memory-panel"><h2 class="section-title">Detected Pattern</h2><div class="memory-row"><div class="memory-date">${esc(summary.hardToInjury.injuryDate)}</div><div><strong>Hard-day stack followed by ${esc(summary.hardToInjury.location)}</strong><br>PACE found ${summary.hardToInjury.hardDays.length} hard sessions in the three days before that report. Future hard-workout recommendations will treat this as a caution pattern.</div></div></section>` : ""}
+        ${memorySection("Coaching Decisions", recentDecisions, item => `<div class="memory-row"><div class="memory-date">${esc(item.date)}</div><div><strong>${esc(item.decision)}</strong><br>${esc(item.reason || "")}</div></div>`)}
+        ${memorySection("Injury Patterns", injuries, item => `<div class="memory-row"><div class="memory-date">${esc(item.date)}</div><div><strong>${esc(item.location)}</strong><br>${esc(item.soreness || "")} ${item.decision ? `<br>${esc(item.decision)}` : ""}</div></div>`)}
+        ${memorySection("Nutrition Tendencies", nutrition, item => `<div class="memory-row"><div class="memory-date">${esc(item.date)}</div><div><strong>${esc(item.signal)}</strong><br>${esc(item.action || "")}</div></div>`)}
+        ${memorySection("HRV And Recovery Baseline", hrv, item => `<div class="memory-row"><div class="memory-date">${esc(item.date)}</div><div><strong>${item.value} ms HRV</strong><br>${item.sleep}h sleep · readiness ${item.readiness}/100</div></div>`)}
+      </div>`;
+    }
+
+    function memorySection(title, items, renderItem){
+      return `<section class="memory-panel">
+        <h2 class="section-title">${title}</h2>
+        ${items.length ? `<div class="memory-list">${items.map(renderItem).join("")}</div>` : `<div class="memory-empty">No stored records yet. Run a Today briefing or ask the coach a question and PACE will begin building this memory.</div>`}
+      </section>`;
+    }
+
+    function chatHtml(){
+      return `<div class="chat-layout">
+        <div class="messages">
+          ${state.messages.map(messageHtml).join("")}
+          ${state.loading ? livePipelineHtml() : ""}
+        </div>
+        ${state.messages.length <= 1 ? `<div class="suggestions">
+          ${["Should I run hard today?","Build me a training week","Pre-race fueling plan","Assess my injury risk"].map(s => `<button data-suggest="${s}">${s}</button>`).join("")}
+        </div>` : ""}
+        <div class="composer">
+          <textarea id="composer-input" rows="1" placeholder="Ask about training, recovery, nutrition, injury, or racing..."></textarea>
+          <button class="send" id="send" ${state.loading ? "disabled" : ""}>→</button>
+        </div>
+      </div>`;
+    }
+    function messageHtml(m){
+      const user = m.role === "user";
+      return `<div class="msg ${user ? "user" : ""}">
+        ${user ? "" : `<div class="avatar ai">AI</div>`}
+        <div class="bubble ${user ? "user" : ""}">
+          ${m.pipeline ? completedPipelineHtml(m.pipeline) : ""}
+          <div class="message-text ${user ? "user" : ""}">${esc(m.content)}</div>
+        </div>
+        ${user ? `<div class="avatar user">${esc((state.profile.name[0] || "U").toUpperCase())}</div>` : ""}
+      </div>`;
+    }
+    function completedPipelineHtml(p){
+      return pipelineShellHtml(p.results, Object.fromEntries(AGENT_IDS.map(id=>[id,"done"])), p.conflicts, false);
+    }
+    function livePipelineHtml(){
+      if(!state.pipeline){
+        return `<div class="msg"><div class="avatar ai">AI</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
+      }
+      return `<div class="msg"><div class="avatar ai">AI</div><div class="bubble">${pipelineShellHtml(state.pipeline.results, state.pipeline.statuses, state.pipeline.conflicts, state.pipeline.orchestrating)}<div class="typing"><span></span><span></span><span></span></div></div></div>`;
+    }
+    function pipelineShellHtml(results,statuses,conflicts,orchestrating){
+      const done = Object.values(statuses).filter(s=>s==="done").length;
+      return `<div class="pipeline">
+        <div class="pipeline-head">
+          <div class="pipeline-title"><span class="dot" style="background:${done === 5 ? C.accent : C.yellow}"></span>${done === 5 ? "5 agents responded" : `${done}/5 agents thinking`}</div>
+          <div class="pipeline-title">${orchestrating ? "orchestrator synthesizing" : "agent breakdown"}</div>
+        </div>
+        <div class="pipeline-body">
+          ${conflicts?.length ? `<div class="conflict"><strong>Conflict:</strong><span>${esc(conflicts[0])}</span></div>` : ""}
+          ${AGENT_IDS.map(id => agentDetailHtml(id, results[id], statuses[id])).join("")}
+        </div>
+      </div>`;
+    }
+    function agentDetailHtml(id,result,status){
+      const a = AGENTS[id];
+      const score = result?.score;
+      return `<div class="agent-detail">
+        <div class="agent-icon" style="background:${a.color}20;color:${a.color}">${a.icon}</div>
+        <div>
+          <div class="agent-detail-title">
+            <strong>${a.name}</strong>
+            <span>${status === "done" ? `${score}/100 · ${result.status}` : "analyzing..."}</span>
+          </div>
+          ${result ? `<div class="agent-headline">${esc(result.headline)}</div>
+          <ul class="agent-insights">${result.insights.map(i=>`<li>${esc(i)}</li>`).join("")}</ul>
+          <div class="agent-headline" style="margin-top:6px"><strong>Recommendation:</strong> ${esc(result.recommendation)}</div>
+          ${result.flags.length ? `<div class="flag-row">${result.flags.map(f=>`<span class="flag">${esc(flagText(f))}</span>`).join("")}</div>` : ""}` : `<div class="agent-headline" style="color:var(--muted)">Waiting on specialist assessment.</div>`}
+        </div>
+        ${status !== "done" ? `<div class="spinner"></div>` : `<div class="badge" style="color:${scoreColor(score)}">${statusLabel(score)}</div>`}
+      </div>`;
+    }
+
+    function flagText(flag){
+      if(typeof flag === "string") return flag;
+      return `${flag.agent}: ${flag.signal}`;
+    }
+
+    function modalHtml(){
+      return `<div class="modal-backdrop" id="modal-backdrop">
+        <div class="modal-card">
+          <div class="modal-head"><div class="modal-title">Data Sources</div><button class="close" id="close-modal">×</button></div>
+          <div class="modal-body"><div class="sources-grid">${sourceCardsHtml()}</div></div>
+        </div>
+      </div>`;
+    }
+
+    function bindShell(){
+      document.querySelectorAll("[data-view]").forEach(btn => btn.onclick = () => { state.view = btn.dataset.view; render(); });
+      $("#manage-sources")?.addEventListener("click", () => { state.modal = true; render(); });
+      $("#install-app")?.addEventListener("click", installPace);
+      $("#reset-memory")?.addEventListener("click", resetMemory);
+      $("#manual-data-form")?.addEventListener("submit", e => {
+        e.preventDefault();
+        saveManualDataFromForm();
+      });
+      $("#sync-strava")?.addEventListener("click", connectStrava);
+      $("#connect-strava")?.addEventListener("click", connectStrava);
+      $("#disconnect-strava")?.addEventListener("click", disconnectStrava);
+      $("#refresh-briefing")?.addEventListener("click", () => runDailyBriefing());
+      $("#checkin-form")?.addEventListener("submit", e => {
+        e.preventDefault();
+        state.checkin = readCheckin();
+        runDailyBriefing();
+      });
+      ["energy","sleepQuality","soreness","pain"].forEach(id => {
+        const el = $("#" + id);
+        if(!el) return;
+        el.addEventListener("input", () => {
+          state.checkin = readCheckin();
+          if(id === "energy" || id === "sleepQuality" || id === "pain") render();
+        });
+      });
+      $("#close-modal")?.addEventListener("click", () => { state.modal = false; render(); });
+      $("#modal-backdrop")?.addEventListener("click", e => { if(e.target.id === "modal-backdrop"){ state.modal = false; render(); } });
+      bindSourceCards();
+      document.querySelectorAll(".modal-body [data-source]").forEach(btn => btn.onclick = e => {
+        const id = e.currentTarget.dataset.source;
+        if(id === "strava" && state.sources[id] === "connected") disconnectStrava();
+        else if(id === "strava") connectStrava();
+        else {
+          state.sources.manual = "connected";
+          state.view = "data";
+          state.modal = false;
+          saveAppState();
+          render();
+        }
+      });
+      $("#send")?.addEventListener("click", () => sendMessage());
+      $("#composer-input")?.addEventListener("keydown", e => {
+        if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); sendMessage(); }
+      });
+      $("#composer-input")?.addEventListener("input", e => {
+        e.target.style.height = "auto";
+        e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+      });
+      document.querySelectorAll("[data-suggest]").forEach(btn => btn.onclick = () => sendMessage(btn.dataset.suggest));
+    }
+
+    function readCheckin(){
+      return {
+        energy:Number($("#energy")?.value || state.checkin.energy || 3),
+        sleepQuality:Number($("#sleepQuality")?.value || state.checkin.sleepQuality || 3),
+        soreness:$("#soreness")?.value || state.checkin.soreness || "",
+        pain:!!$("#pain")?.checked
+      };
+    }
+
+    async function installPace(){
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        return;
+      }
+      if (location.protocol === "file:") {
+        showToast("To install PACE, open it from the local app URL instead of the file URL. I set that up for you in this workspace.");
+      } else {
+        showToast("Use your browser's install option if it appears. On Safari, use Share, then Add to Dock or Add to Home Screen.");
+      }
+    }
+
+    function showToast(message){
+      document.querySelector(".toast")?.remove();
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 5200);
+    }
+
+    render();
+  </script>
+</body>
+</html>

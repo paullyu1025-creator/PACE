@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">PACE</title>
+  <desc id="desc">PACE app icon</desc>
+  <rect width="512" height="512" rx="104" fill="#070707"/>
+  <path d="M82 348V164h132c39 0 67 25 67 61s-28 61-67 61h-68v62H82Zm64-114h57c10 0 17-4 17-9s-7-9-17-9h-57v18Z" fill="#d4ff3e"/>
+  <path d="M286 348l73-184h72l73 184h-68l-10-29h-65l-10 29h-65Zm91-77h33l-16-48-17 48Z" fill="#d4ff3e"/>
+  <path d="M82 388h348" stroke="#d4ff3e" stroke-width="24" stroke-linecap="round"/>
+</svg>
