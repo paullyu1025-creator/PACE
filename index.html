@@ -314,7 +314,7 @@
 </head>
 <body>
   <div id="app" class="app"></div>
-   >
+  <script>
     const C = {
       accent: "#d4ff3e", cyan: "#61c7ef", orange: "#f4a261", red: "#ff5a5f",
       purple: "#ba75ff", yellow: "#ffb84a", green: "#80e36a", muted: "#8b8b8b"
@@ -1252,19 +1252,21 @@
     }
 
     function renderSources(){
+      const cards = sourceCardsHtml();
       app.innerHTML = `
         <div class="progress"><span style="width:100%"></span></div>
         <section class="sources-screen">
           <div class="sources-wrap">
             <h1 class="screen-title">Connect your platforms</h1>
             <p class="screen-sub">Fake Stage 6 starts with manual daily data and Strava only. Garmin, WHOOP, Apple Health, and the rest stay parked for later.</p>
-            <div class="sources-grid">${sourceCardsHtml()}</div>
+            <div class="sources-grid" id="sources-grid"></div>
             <div class="sources-footer">
               <button class="primary" id="launch">${connectedIds().length ? "Launch PACE" : "Continue Without Data"} <span>→</span></button>
               <button class="ghost" id="skip">Skip for now</button>
             </div>
           </div>
         </section>`;
+      $("#sources-grid").innerHTML = cards;
       bindSourceCards();
       $("#launch").onclick = startApp;
       $("#skip").onclick = () => { state.sources = {}; startApp(); };
@@ -1779,12 +1781,14 @@
       return `<div class="modal-backdrop" id="modal-backdrop">
         <div class="modal-card">
           <div class="modal-head"><div class="modal-title">Data Sources</div><button class="close" id="close-modal">×</button></div>
-          <div class="modal-body"><div class="sources-grid">${sourceCardsHtml()}</div></div>
+          <div class="modal-body"><div class="sources-grid" id="modal-sources-grid"></div></div>
         </div>
       </div>`;
     }
 
     function bindShell(){
+      const modalGrid = $("#modal-sources-grid");
+      if(modalGrid) modalGrid.innerHTML = sourceCardsHtml();
       document.querySelectorAll("[data-view]").forEach(btn => btn.onclick = () => { state.view = btn.dataset.view; render(); });
       $("#manage-sources")?.addEventListener("click", () => { state.modal = true; render(); });
       $("#install-app")?.addEventListener("click", installPace);
