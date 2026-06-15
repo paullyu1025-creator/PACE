@@ -1,4 +1,4 @@
-const CACHE_NAME = "pace-app-v5";
+const CACHE_NAME = "pace-app-v6";
 const APP_SHELL = [
   "./",
   "./index.html",
