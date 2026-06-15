@@ -59,32 +59,15 @@
     .step-input{width:min(460px,100%);border:0;border-bottom:2px solid var(--accent);background:transparent;color:var(--text);outline:0;text-align:center;font-size:23px;padding:12px 4px}
     .step-input::placeholder{color:#333}
     .level-grid{width:min(520px,100%);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .level-card,.source-card,.metric-card,.insight-card,.workout-card,.readiness-card,.week-card,.agent-detail,.chat-item,.modal-card{border:1px solid var(--border);background:var(--panel);border-radius:8px}
+    .level-card,.metric-card,.insight-card,.workout-card,.readiness-card,.week-card,.agent-detail,.chat-item,.modal-card{border:1px solid var(--border);background:var(--panel);border-radius:8px}
     .level-card{padding:18px;text-align:left;color:var(--text)}
     .level-card:hover{border-color:var(--accent);background:rgba(212,255,62,.045)}
     .level-card strong{display:block;font-size:15px;margin-bottom:5px}
     .level-card span{display:block;color:var(--muted);font-size:12px;line-height:1.45}
-    .sources-screen{min-height:100vh;padding:56px 24px;display:flex;align-items:flex-start;justify-content:center}
-    .sources-wrap{width:min(780px,100%)}
     .screen-title{font-size:28px;font-weight:800;letter-spacing:-.55px;text-align:center;margin:0 0 8px}
     .screen-sub{font-size:13px;line-height:1.65;color:var(--muted);text-align:center;margin:0 0 30px}
-    .sources-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .source-card{padding:15px;text-align:left;position:relative;min-height:148px}
-    .source-card:hover{border-color:#3a3a3a}
-    .source-card.connected{border-color:var(--accent);background:rgba(212,255,62,.045)}
-    .source-card.connecting{border-color:var(--yellow)}
-    .source-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
-    .source-icon{font-size:18px}
-    .status-dot{width:22px;height:22px;border-radius:50%;background:#262626;display:grid;place-items:center;color:#050505;font-size:12px;font-weight:900}
-    .status-dot.connected{background:var(--accent)}
-    .status-dot.connecting{border:2px solid var(--yellow);background:transparent;animation:spin .8s linear infinite}
-    .source-name{font-size:14px;font-weight:800}
-    .source-signals{font-size:11px;color:var(--muted);line-height:1.55;margin-top:5px}
     .tag-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
     .tag{font-size:10px;color:#bdbdbd;background:#242424;border:1px solid #303030;border-radius:4px;padding:3px 7px}
-    .source-action{font-size:11px;margin-top:10px;color:var(--muted)}
-    .source-card.connected .source-action,.source-card.connecting .source-action{color:var(--accent)}
-    .sources-footer{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:22px;flex-wrap:wrap}
     .shell{height:100vh;display:grid;grid-template-columns:230px 1fr;background:var(--bg);overflow:hidden}
     .sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
     .side-logo{height:60px;display:flex;align-items:center;padding:0 18px;border-bottom:1px solid var(--border);font-size:23px;font-weight:900;letter-spacing:-2px;color:var(--accent)}
@@ -218,23 +201,6 @@
     .memory-row:first-child{border-top:0;padding-top:0}
     .memory-date{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
     .memory-empty{color:var(--muted);font-size:13px;line-height:1.7;border:1px dashed #333;border-radius:8px;padding:16px}
-    .data-console{max-width:1120px;margin:0 auto;display:grid;gap:14px}
-    .data-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.9fr);gap:14px;align-items:start}
-    .data-panel{border:1px solid var(--border);background:var(--panel);border-radius:8px;padding:16px}
-    .manual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
-    .manual-field label{display:block;font-size:11px;color:var(--muted);font-weight:850;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px}
-    .manual-field input,.manual-field textarea{width:100%;border:1px solid var(--border);background:#101010;color:var(--text);border-radius:7px;outline:0;padding:10px 11px;font-size:14px}
-    .manual-field textarea{min-height:88px;resize:vertical;line-height:1.5}
-    .manual-field.full{grid-column:1/-1}
-    .source-big{border:1px solid var(--border);background:#111;border-radius:8px;padding:15px;margin-top:12px}
-    .source-big.connected{border-color:#fc4c02;background:rgba(252,76,2,.06)}
-    .source-big-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
-    .source-big-title{font-size:17px;font-weight:900}
-    .source-big-copy{font-size:12px;line-height:1.65;color:var(--muted)}
-    .activity-list{display:grid;gap:8px;margin-top:12px}
-    .activity-row{display:grid;grid-template-columns:1fr auto;gap:10px;border-top:1px solid var(--border);padding-top:9px;font-size:12px;color:#d7d7d7}
-    .activity-row:first-child{border-top:0;padding-top:0}
-    .activity-meta{color:var(--muted);font-size:11px;margin-top:3px}
     .today-report{max-width:1120px;margin:0 auto;color:#ededed}
     .report-paper{border:1px solid var(--border);background:linear-gradient(180deg,#151515,#101010);border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
     .report-head{padding:22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
@@ -297,13 +263,12 @@
       .brief-grid,.hero-brief,.checkin-grid{grid-template-columns:1fr}
       .agent-compact{grid-template-columns:repeat(2,minmax(0,1fr))}
       .memory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .data-grid,.manual-grid{grid-template-columns:1fr}
     }
     @media (max-width:620px){
       .center-screen{padding:22px}
       .brand{font-size:62px;letter-spacing:-5px}
       .step-title{font-size:25px}
-      .level-grid,.sources-grid{grid-template-columns:1fr}
+      .level-grid{grid-template-columns:1fr}
       .view{padding:14px}
       .bubble{max-width:92%}
       .topbar{padding:0 14px}
@@ -328,11 +293,6 @@
       race: { id:"race", name:"Race Strategy Agent", short:"Race", icon:"◈", color:C.purple }
     };
     const AGENT_IDS = Object.keys(AGENTS);
-
-    const DATA_SOURCES = [
-      { id:"manual", name:"Manual Daily Data", signals:["sleep","soreness","mileage","HRV"], agents:["training","recovery","injury"], color:"#d4ff3e", icon:"✎" },
-      { id:"strava", name:"Strava", signals:["run logs","distance","pace","elevation"], agents:["training","race"], color:"#fc4c02", icon:"⚡" }
-    ];
 
     const ONBOARDING = [
       { field:"name", q:"What's your name?", ph:"Alex" },
@@ -393,14 +353,12 @@
       step:0,
       temp:"",
       profile:storedState?.profile || { name:"", weeklyMiles:"", goal:"", raceDate:"", level:"" },
-      sources:storedState?.sources || {},
-      manualData:storedState?.manualData || { sleepHours:"", soreness:"", mileage:"", hrv:"", updatedAt:null },
-      stravaData:storedState?.stravaData || { connected:false, lastSync:null, activities:[] },
+      manualData:storedState?.manualData || { sleepHours:"", hrv:"", soreness:"", trainingPlan:"", updatedAt:null },
       messages:storedState?.messages || [],
       loading:false,
       pipeline:null,
       lastScores:storedState?.lastScores || { training:null, recovery:null, nutrition:null, injury:null, race:null },
-      checkin:storedState?.checkin || { energy:3, sleepQuality:3, soreness:"", pain:false },
+      checkin:storedState?.checkin || { sleepHours:"", hrv:"", energy:3, soreness:"", trainingPlan:"" },
       todayBriefing:storedState?.todayBriefing || null,
       readinessHistory:storedState?.readinessHistory || seedReadinessHistory(),
       memory:storedState?.memory || seedMemory(),
@@ -433,31 +391,41 @@
     const app = $("#app");
     const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c]));
-    const milesNumber = () => Math.max(10, parseInt(String(state.manualData?.mileage || state.profile.weeklyMiles).match(/\d+/)?.[0] || "40", 10));
-    const connectedIds = () => Object.keys(state.sources).filter(id => state.sources[id] === "connected" && DATA_SOURCES.some(src => src.id === id));
-    const connectedNames = () => connectedIds().map(id => DATA_SOURCES.find(s => s.id === id)?.name).filter(Boolean);
+    const milesNumber = () => Math.max(10, parseInt(String(state.profile.weeklyMiles).match(/\d+/)?.[0] || "40", 10));
     const todayKey = () => new Date().toISOString().slice(0, 10);
+    const sleepQualityFromHours = (hours) => Math.max(1, Math.min(5, Math.round((Number(hours) || 6.5) - 3)));
+    const sorenessPainFlag = (text) => /pain|sharp|limp|swelling|can't|cannot|acute|severe|stress|shooting/i.test(String(text || ""));
+    const hardPlanIntent = (text) => /hard|interval|tempo|threshold|race|speed|track|hill|long|progression|workout/i.test(String(text || ""));
+    const hrvFromStatus = (raw, fallback) => {
+      const text = String(raw || "").trim().toLowerCase();
+      const numeric = Number(text);
+      if(Number.isFinite(numeric) && numeric > 0) return numeric;
+      if(/very low|crash|poor|bad|red/.test(text)) return Math.max(30, fallback - 12);
+      if(/low|down|below/.test(text)) return Math.max(34, fallback - 8);
+      if(/high|up|above|green|great/.test(text)) return fallback + 6;
+      return fallback;
+    };
     const dataSnapshot = () => {
       const miles = milesNumber();
-      const seed = state.messages.length + connectedIds().length + state.profile.goal.length;
+      const seed = state.messages.length + state.profile.goal.length;
       const manual = state.manualData || {};
-      const strava = stravaSummary();
-      const sleepHours = Number(manual.sleepHours) || +(6.3 + (seed % 13)/10).toFixed(1);
-      const hrv = Number(manual.hrv) || Math.round(48 + (seed % 16));
+      const checkin = state.checkin || {};
+      const sleepHours = Number(checkin.sleepHours || manual.sleepHours) || +(6.3 + (seed % 13)/10).toFixed(1);
+      const hrv = hrvFromStatus(checkin.hrv || manual.hrv, Math.round(48 + (seed % 16)));
       const soreness = manual.soreness?.trim() || (seed % 4 === 0 ? "left calf tightness" : seed % 5 === 0 ? "Achilles stiffness" : "normal muscle soreness");
-      const acuteLoad = strava.weeklyMiles ? Math.round(strava.weeklyMiles * 1.14) : Math.round(miles * 1.16);
+      const trainingPlan = checkin.trainingPlan?.trim() || manual.trainingPlan?.trim() || "No planned session entered";
+      const acuteLoad = Math.round(miles * (hardPlanIntent(trainingPlan) ? 1.16 : 1.04));
       const chronicLoad = Math.round(miles * 1.03);
       return {
         weeklyMileage:miles,
-        sevenDayLoad:strava.loads.length ? strava.loads : [42,55,28,68,35,82,22].map((v,i)=>Math.min(95, Math.round(v + miles/4 + ((seed+i)%9)))),
+        sevenDayLoad:[42,55,28,68,35,82,22].map((v,i)=>Math.min(95, Math.round(v + miles/4 + ((seed+i)%9)))),
         vo2: Math.round(42 + miles/4 + (state.profile.level === "elite" ? 8 : state.profile.level === "advanced" ? 5 : 0)),
         hrv,
         sleep: sleepHours,
         acuteLoad,
         chronicLoad,
-        soreness,
-        strava,
-        sources: connectedNames()
+        soreness: checkin.soreness?.trim() || soreness,
+        trainingPlan
       };
     };
 
@@ -465,9 +433,7 @@
       try {
         const payload = {
           profile: state.profile,
-          sources: state.sources,
           manualData: state.manualData,
-          stravaData: state.stravaData,
           messages: state.messages.slice(-30),
           lastScores: state.lastScores,
           checkin: state.checkin,
@@ -585,12 +551,12 @@
       memory.hrvReadings = [...memory.hrvReadings, { date, value: snap.hrv, sleep: snap.sleep, readiness: briefing.finalScore }].slice(-90);
 
       const injuryLocation = locationFromText(checkin.soreness);
-      if(checkin.pain || injuryLocation){
+      if(sorenessPainFlag(checkin.soreness) || injuryLocation){
         memory.injuryPatterns = [...memory.injuryPatterns, {
           date,
-          location: injuryLocation || "pain flag",
-          soreness: checkin.soreness || "pain flagged",
-          pain: checkin.pain,
+          location: injuryLocation || "soreness flag",
+          soreness: checkin.soreness || "soreness flagged",
+          pain: sorenessPainFlag(checkin.soreness),
           readiness: briefing.finalScore,
           decision: briefing.prescription.type
         }].slice(-80);
@@ -645,79 +611,6 @@
       memory.updatedAt = new Date().toISOString();
     }
 
-    function saveManualDataFromForm(){
-      state.manualData = {
-        sleepHours:$("#manual-sleep")?.value.trim() || "",
-        soreness:$("#manual-soreness")?.value.trim() || "",
-        mileage:$("#manual-mileage")?.value.trim() || "",
-        hrv:$("#manual-hrv")?.value.trim() || "",
-        updatedAt:new Date().toISOString()
-      };
-      state.sources.manual = "connected";
-      state.checkin = {
-        ...state.checkin,
-        soreness: state.manualData.soreness || state.checkin.soreness,
-        sleepQuality: state.manualData.sleepHours ? Math.max(1, Math.min(5, Math.round(Number(state.manualData.sleepHours) - 3))) : state.checkin.sleepQuality
-      };
-      computeDaily();
-      saveAppState();
-      showToast("Manual daily data saved and injected into the agents.");
-      render();
-    }
-
-    function generateStravaActivities(){
-      const today = new Date();
-      const names = ["Easy Run", "Progression Run", "Long Run", "Recovery Jog", "Tempo Run", "Easy Run", "Hill Run"];
-      const distances = [5.2, 7.1, 12.4, 3.8, 6.6, 4.9, 5.7];
-      return names.map((name, i) => {
-        const date = new Date(today);
-        date.setDate(today.getDate() - (6 - i));
-        return {
-          id:`fake-strava-${i}`,
-          name,
-          date:date.toISOString().slice(0, 10),
-          distance:distances[i],
-          pace:["8:42/mi","8:05/mi","8:58/mi","9:25/mi","7:28/mi","8:51/mi","8:15/mi"][i],
-          elevation:[85,120,310,42,96,72,180][i],
-          load:Math.round(distances[i] * (name.includes("Tempo") ? 9 : name.includes("Long") ? 7 : 5))
-        };
-      });
-    }
-
-    function stravaSummary(){
-      const activities = state.stravaData?.activities || [];
-      if(!activities.length) return { weeklyMiles:0, loads:[], hardest:null, activityCount:0 };
-      const weeklyMiles = +activities.reduce((sum,a)=>sum + Number(a.distance || 0),0).toFixed(1);
-      const maxLoad = Math.max(...activities.map(a => a.load || 1));
-      const loads = activities.map(a => Math.max(18, Math.min(96, Math.round((a.load || 1) / maxLoad * 92))));
-      const hardest = activities.slice().sort((a,b)=>(b.load || 0) - (a.load || 0))[0];
-      return { weeklyMiles, loads, hardest, activityCount:activities.length };
-    }
-
-    function connectStrava(){
-      state.sources.strava = "connecting";
-      saveAppState();
-      render();
-      setTimeout(() => {
-        state.sources.strava = "connected";
-        state.stravaData = {
-          connected:true,
-          lastSync:new Date().toISOString(),
-          activities:generateStravaActivities()
-        };
-        saveAppState();
-        showToast("Strava connected with sample activity data for this prototype.");
-        render();
-      }, 900);
-    }
-
-    function disconnectStrava(){
-      delete state.sources.strava;
-      state.stravaData = { connected:false, lastSync:null, activities:[] };
-      saveAppState();
-      render();
-    }
-
     function scoreColor(score){
       if(score >= 75) return C.accent;
       if(score >= 55) return C.yellow;
@@ -742,8 +635,7 @@
       const raceIntent = /race|marathon|half|10k|5k|pace|taper/.test(q) || !/no race/i.test(state.profile.raceDate);
       const fuelIntent = /fuel|eat|carb|hydr|gel|nutrition|calorie/.test(q);
       const loadRatio = snap.acuteLoad / Math.max(1, snap.chronicLoad);
-      const connected = connectedNames();
-      const sourceText = connected.length ? `Using ${connected.slice(0,3).join(", ")} signals.` : "Using profile and conversation data only.";
+      const contextText = "Using manual morning inputs and local memory.";
       const memoryText = memoryInsightFor(query);
 
       if(id === "training"){
@@ -756,7 +648,7 @@
           insights:[
             `${snap.weeklyMileage} mi/week profile suggests a sustainable next-week range of ${Math.round(snap.weeklyMileage*.95)}-${Math.round(snap.weeklyMileage*1.08)} miles.`,
             `Acute-to-chronic load is ${loadRatio.toFixed(2)}, so the system should avoid stacking hard days.`,
-            sourceText,
+            contextText,
             memoryText
           ],
           recommendation: hardIntent ? "Run 10-15 min warmup, 5 x 4 min at threshold effort with 2 min jog, then cool down. Cap total volume near 75 minutes." : "Keep today aerobic: 40-55 minutes easy plus 6 x 20 second relaxed strides if legs feel smooth.",
@@ -773,7 +665,7 @@
           insights:[
             `HRV estimate is ${snap.hrv} ms with ${snap.sleep} hours of sleep.`,
             score < 65 ? "The recovery agent would reduce intensity before reducing all movement." : "No major autonomic warning is present in the current snapshot.",
-            sourceText,
+            contextText,
             memoryText
           ],
           recommendation: score >= 75 ? "Proceed, but keep the final 10 minutes honest about effort." : "Move intensity down one notch: easy running or cross-training, then prioritize sleep tonight.",
@@ -790,7 +682,7 @@
           insights:[
             `At ${snap.weeklyMileage} mi/week, daily carbohydrate needs likely sit around 4-7 g/kg depending on training stress.`,
             hardIntent ? "A quality workout should not start under-fueled." : "Normal easy days still need consistent protein and hydration.",
-            sourceText,
+            contextText,
             memoryText
           ],
           recommendation: hardIntent ? "Take 30-60 g carbs 60-90 minutes pre-run. For sessions over 75 minutes, add 30-45 g carbs/hour and 400-700 ml fluid/hour." : "Anchor the day with carbs around training and 25-35 g protein within two hours after running.",
@@ -807,7 +699,7 @@
           insights:[
             `Reported/body signal context: ${snap.soreness}.`,
             `The current load ratio of ${loadRatio.toFixed(2)} is ${loadRatio > 1.15 ? "above" : "inside"} the preferred progression band.`,
-            sourceText,
+            contextText,
             memoryText
           ],
           recommendation: painIntent ? "Skip speedwork for 48 hours. Run only if pain stays 0-2/10 and does not alter stride; otherwise cross-train and reassess." : "Keep hard surfaces and downhill volume modest, and separate hard sessions by at least 48 hours.",
@@ -824,7 +716,7 @@
           insights:[
             `Goal context: ${state.profile.goal || "not set"}; race date: ${state.profile.raceDate || "not set"}.`,
             "Best race outcomes come from matching pacing, taper, and fueling instead of treating them separately.",
-            sourceText,
+            contextText,
             memoryText
           ],
           recommendation: raceIntent ? "Use even effort through the first half, avoid banking time, and practice race fueling in the next long run before changing goal pace." : "Set a target distance and date before building a full pacing model.",
@@ -914,19 +806,21 @@
     function createDailyAgentResult(id, checkin){
       const snap = dataSnapshot();
       const phase = trainingPhase();
-      const sorenessText = checkin.soreness.trim() || snap.soreness;
+      const sorenessText = String(checkin.soreness || "").trim() || snap.soreness;
       const loadRatio = snap.acuteLoad / Math.max(1, snap.chronicLoad);
-      const connected = connectedNames();
-      const sourceText = connected.length ? `Cross-checked against ${connected.slice(0,3).join(", ")} signals.` : "No live platform feed; weighted from profile plus check-in.";
+      const contextText = "Weighted from this morning's manual input plus remembered history.";
       const memory = memorySummary();
       const recurringLocation = memory.recurringInjury?.location || "";
       const memoryText = memoryInsightFor(sorenessText);
-      const painPenalty = checkin.pain ? 24 : 0;
+      const painFlag = sorenessPainFlag(sorenessText);
+      const painPenalty = painFlag ? 24 : 0;
       const memoryPenalty = recurringLocation && sorenessText.toLowerCase().includes(recurringLocation) ? 7 : 0;
       const sorenessPenalty = (/calf|achilles|knee|shin|plantar|hip|hamstring/i.test(sorenessText) ? 8 : 0) + memoryPenalty;
       const energyBonus = (Number(checkin.energy) - 3) * 6;
-      const sleepBonus = (Number(checkin.sleepQuality) - 3) * 5;
+      const sleepQuality = sleepQualityFromHours(checkin.sleepHours || snap.sleep);
+      const sleepBonus = (sleepQuality - 3) * 5;
       const loadPenalty = Math.max(0, loadRatio - 1.08) * 85;
+      const plannedSession = checkin.trainingPlan?.trim() || snap.trainingPlan;
 
       if(id === "training"){
         const score = Math.round(Math.max(35, Math.min(94, 76 + energyBonus - loadPenalty - painPenalty * .35)));
@@ -935,13 +829,14 @@
           : score >= 55
             ? { type:"Aerobic Maintenance", distance:"4-6 miles", paceZone:"Easy conversational pace", hrCeiling:"75% max HR", duration:"40-55 min", rationale:"The aerobic system gets maintained while fatigue and soreness stay contained." }
             : { type:"Recovery or Rest", distance:"0-3 miles optional", paceZone:"Very easy only", hrCeiling:"68% max HR", duration:"0-30 min", rationale:"Training benefit is lower than recovery cost today." };
+        if(plannedSession && plannedSession !== "No planned session entered") workout.rationale = `Planned session: ${plannedSession}. ${workout.rationale}`;
         return {
           status: statusFor(score), score,
           headline: score >= 75 ? "Training can absorb a controlled quality stimulus." : score >= 55 ? "Training should stay aerobic today." : "Training load should give way to recovery.",
           insights:[
             `${snap.weeklyMileage} mi/week with an acute/chronic load ratio of ${loadRatio.toFixed(2)}.`,
             phase === "race week" ? "Race week shifts training toward freshness, not fitness building." : `Current phase reads as ${phase}.`,
-            sourceText,
+            contextText,
             memoryText
           ],
           recommendation: workout.rationale,
@@ -959,13 +854,13 @@
           status: statusFor(score), score,
           headline: score >= 75 ? "Recovery state supports the plan." : score >= 55 ? "Recovery is mixed; intensity needs a governor." : "Recovery is the limiting factor.",
           insights:[
-            `Check-in energy ${checkin.energy}/5 and sleep quality ${checkin.sleepQuality}/5.`,
+            `Check-in energy ${checkin.energy}/5, sleep ${checkin.sleepHours || snap.sleep} hours, HRV ${checkin.hrv || snap.hrv}.`,
             `HRV estimate is ${snap.hrv} ms with ${snap.sleep} hours from the simulated snapshot.`,
-            memory.hrvBaseline ? `Stored HRV baseline is ${memory.hrvBaseline} ms across recent briefings.` : sourceText
+            memory.hrvBaseline ? `Stored HRV baseline is ${memory.hrvBaseline} ms across recent briefings.` : contextText
           ],
           recommendation: score >= 75 ? "Proceed with training while monitoring perceived effort." : score >= 55 ? "Keep the session honest but capped; no late surges." : "Prioritize sleep, nutrition, and low stress before more training stress.",
           flags:[
-            ...(checkin.sleepQuality <= 2 ? [{ agent:"Recovery", severity:"yellow", signal:"Sleep quality check-in is low.", action:"Remove intensity or shorten the session by 20-30%." }] : []),
+            ...(sleepQuality <= 2 ? [{ agent:"Recovery", severity:"yellow", signal:"Sleep duration is low for today's plan.", action:"Remove intensity or shorten the session by 20-30%." }] : []),
             ...(checkin.energy <= 2 ? [{ agent:"Recovery", severity:"red", signal:"Subjective energy is low before training starts.", action:"Treat this as a recovery-led day." }] : [])
           ]
         };
@@ -973,14 +868,14 @@
 
       if(id === "nutrition"){
         const highLoad = snap.acuteLoad > snap.weeklyMileage * 1.1;
-        const score = Math.round(Math.max(42, Math.min(92, 73 + energyBonus * .35 - (highLoad ? 6 : 0) - (checkin.sleepQuality <= 2 ? 4 : 0))));
+        const score = Math.round(Math.max(42, Math.min(92, 73 + energyBonus * .35 - (highLoad ? 6 : 0) - (sleepQuality <= 2 ? 4 : 0))));
         return {
           status: statusFor(score), score,
           headline: highLoad ? "Fuel availability matters because load is elevated." : "Fuel status is adequate if meals bracket the run.",
           insights:[
             `Weekly mileage profile points to roughly 4-7 g/kg carbohydrate on training days.`,
             checkin.energy <= 2 ? "Low energy can be recovery-driven, fuel-driven, or both." : "No strong underfueling signal appears in the check-in.",
-            memory.nutrition.length ? `Prior nutrition memory: ${memory.nutrition.at(-1).signal}` : sourceText
+            memory.nutrition.length ? `Prior nutrition memory: ${memory.nutrition.at(-1).signal}` : contextText
           ],
           recommendation: "Place carbohydrates before the run and protein afterward so the prescription does not create unnecessary recovery debt.",
           flags:[
@@ -996,12 +891,12 @@
           headline: score >= 75 ? "Injury risk is acceptable with normal guardrails." : score >= 55 ? "Injury risk is elevated enough to alter the day." : "Injury risk should override workout ambition.",
           insights:[
             `Soreness report: ${sorenessText}.`,
-            checkin.pain ? "Pain flag is active, so this agent gets veto power over intensity." : "No specific pain flag was entered.",
-            recurringLocation ? `Memory shows ${recurringLocation} has recurred ${memory.recurringInjury.count} time${memory.recurringInjury.count > 1 ? "s" : ""}.` : sourceText
+            painFlag ? "Soreness language implies possible pain, so this agent gets veto power over intensity." : "No severe pain language was entered.",
+            recurringLocation ? `Memory shows ${recurringLocation} has recurred ${memory.recurringInjury.count} time${memory.recurringInjury.count > 1 ? "s" : ""}.` : contextText
           ],
           recommendation: score >= 75 ? "Keep mechanics smooth and stop if pain emerges." : score >= 55 ? "Avoid speed, hills, and aggressive surfaces today." : "Do not run through pain. Cross-train only if it is pain-free.",
           flags:[
-            ...(checkin.pain ? [{ agent:"Injury Risk", severity:"red", signal:"Specific pain was flagged in the morning check-in.", action:"No hard running; run only if pain stays 0-2/10 and gait is unchanged." }] : []),
+            ...(painFlag ? [{ agent:"Injury Risk", severity:"red", signal:"Soreness entry contains pain-risk language.", action:"No hard running; run only if pain stays 0-2/10 and gait is unchanged." }] : []),
             ...(sorenessPenalty ? [{ agent:"Injury Risk", severity:memoryPenalty ? "red" : "yellow", signal:`Soreness location needs watching: ${sorenessText}.`, action:memoryPenalty ? "This matches stored history, so do not stack hard days until it clears." : "Shorten the route and avoid hills or speed until it settles." }] : [])
           ]
         };
@@ -1016,7 +911,7 @@
         insights:[
           d === null ? "No parsed race date is available." : `${d} days until the target race.`,
           raceWeek ? "Recovery and race execution receive extra orchestrator weight this week." : `The current phase reads as ${phase}.`,
-          memory.decisions.length ? `Recent coaching memory: ${memory.decisions.at(-1).decision}` : sourceText
+          memory.decisions.length ? `Recent coaching memory: ${memory.decisions.at(-1).decision}` : contextText
         ],
         recommendation: raceWeek ? "Keep the legs responsive, not tired. Nothing today should create soreness 48 hours from now." : "Let today's session support race specificity without forcing race effort.",
         flags:[
@@ -1036,8 +931,8 @@
     function orchestrateDaily(results, checkin){
       const weights = dailyWeights();
       let finalScore = AGENT_IDS.reduce((sum, id) => sum + results[id].score * weights[id], 0);
-      if(checkin.pain) finalScore = Math.min(finalScore, 58);
-      if(checkin.energy <= 2 && checkin.sleepQuality <= 2) finalScore = Math.min(finalScore, 54);
+      if(sorenessPainFlag(checkin.soreness)) finalScore = Math.min(finalScore, 58);
+      if(checkin.energy <= 2 && sleepQualityFromHours(checkin.sleepHours) <= 2) finalScore = Math.min(finalScore, 54);
       finalScore = Math.round(Math.max(25, Math.min(96, finalScore)));
       const topFlags = AGENT_IDS.flatMap(id => results[id].flags || [])
         .sort((a,b) => ({ red:0, yellow:1, green:2 }[a.severity] - { red:0, yellow:1, green:2 }[b.severity]))
@@ -1122,12 +1017,10 @@
 
     function startApp(){
       computeDaily();
-      const names = connectedNames();
-      const sourceLine = names.length ? `Data sources active: ${names.join(", ")}.` : "No app sources connected yet; use the Data tab for manual inputs or Strava.";
       if(!state.messages.length){
         state.messages = [{
           role:"assistant",
-          content:`Hey ${state.profile.name}. Profile locked in: ${state.profile.weeklyMiles} per week, goal is ${state.profile.goal}. ${sourceLine}\n\nFor Stage 6 Lite, I use manual sleep, soreness, mileage, and HRV first, plus Strava run logs when connected. I still keep local memory of check-ins, injury patterns, fueling signals, baselines, and coaching decisions.`
+          content:`Hey ${state.profile.name}. Profile locked in: ${state.profile.weeklyMiles} per week, goal is ${state.profile.goal}.\n\nEvery morning, enter sleep time, HRV, energy, soreness, and today's training plan. I use those manual inputs plus remembered history to brief the agents and store coaching context over time.`
         }];
       }
       state.phase = "app";
@@ -1155,37 +1048,10 @@
       render();
     }
 
-    function connectSource(id){
-      if(id === "strava") return connectStrava();
-      if(id === "manual"){
-        state.sources.manual = "connected";
-        state.view = "data";
-        saveAppState();
-        render();
-        return;
-      }
-      if(state.sources[id]) return;
-      state.sources[id] = "connecting";
-      saveAppState();
-      render();
-      setTimeout(() => {
-        state.sources[id] = "connected";
-        saveAppState();
-        render();
-      }, 850 + Math.random()*500);
-    }
-    function disconnectSource(id){
-      if(id === "strava") return disconnectStrava();
-      delete state.sources[id];
-      saveAppState();
-      render();
-    }
-
     function render(){
       if(state.phase === "welcome") return renderWelcome();
       if(state.phase === "onboard") return renderOnboard();
       if(state.phase === "level") return renderLevel();
-      if(state.phase === "sources") return renderSources();
       return renderShell();
     }
 
@@ -1246,58 +1112,7 @@
         </section>`;
       document.querySelectorAll("[data-level]").forEach(btn => btn.onclick = () => {
         state.profile.level = btn.dataset.level;
-        state.phase = "sources";
-        render();
-      });
-    }
-
-    function renderSources(){
-      const cards = sourceCardsHtml();
-      app.innerHTML = `
-        <div class="progress"><span style="width:100%"></span></div>
-        <section class="sources-screen">
-          <div class="sources-wrap">
-            <h1 class="screen-title">Connect your platforms</h1>
-            <p class="screen-sub">Fake Stage 6 starts with manual daily data and Strava only. Garmin, WHOOP, Apple Health, and the rest stay parked for later.</p>
-            <div class="sources-grid" id="sources-grid"></div>
-            <div class="sources-footer">
-              <button class="primary" id="launch">${connectedIds().length ? "Launch PACE" : "Continue Without Data"} <span>→</span></button>
-              <button class="ghost" id="skip">Skip for now</button>
-            </div>
-          </div>
-        </section>`;
-      $("#sources-grid").innerHTML = cards;
-      bindSourceCards();
-      $("#launch").onclick = startApp;
-      $("#skip").onclick = () => { state.sources = {}; startApp(); };
-    }
-
-    function sourceCardsHtml(){
-      const agentLabels = { training:"Training", recovery:"Recovery", nutrition:"Nutrition", injury:"Injury", race:"Race" };
-      return DATA_SOURCES.map(src => {
-        const st = state.sources[src.id] || "";
-        return `<button class="source-card ${st}" data-source="${src.id}">
-          <div class="source-top">
-            <span class="source-icon" style="color:${src.color}">${src.icon}</span>
-            <span class="status-dot ${st}">${st === "connected" ? "✓" : ""}</span>
-          </div>
-          <div class="source-name">${src.name}</div>
-          <div class="source-signals">${src.signals.slice(0,4).join(" · ")}</div>
-          <div class="tag-row">${src.agents.map(a => `<span class="tag">${agentLabels[a]}</span>`).join("")}</div>
-          <div class="source-action">${st === "connected" ? "Connected" : st === "connecting" ? "Connecting..." : src.id === "manual" ? "Open manual input form" : "Connect Strava"}</div>
-        </button>`;
-      }).join("");
-    }
-    function bindSourceCards(){
-      document.querySelectorAll("[data-source]").forEach(btn => btn.onclick = () => {
-        const id = btn.dataset.source;
-        if(id === "strava") connectStrava();
-        else {
-          state.sources.manual = "connected";
-          state.view = "data";
-          saveAppState();
-          render();
-        }
+        startApp();
       });
     }
 
@@ -1307,10 +1122,9 @@
           ${sidebarHtml()}
           <main class="main">
             ${topbarHtml()}
-            <section class="view">${state.view === "dashboard" ? dashboardHtml() : state.view === "today" ? todayHtml() : state.view === "data" ? dataHtml() : state.view === "memory" ? memoryHtml() : chatHtml()}</section>
+            <section class="view">${state.view === "dashboard" ? dashboardHtml() : state.view === "today" ? todayHtml() : state.view === "memory" ? memoryHtml() : chatHtml()}</section>
           </main>
-        </div>
-        ${state.modal ? modalHtml() : ""}`;
+        </div>`;
       bindShell();
       const messages = $(".messages");
       if(messages) messages.scrollTop = messages.scrollHeight;
@@ -1328,7 +1142,6 @@
         </div>
         <nav class="nav">
           ${navButton("today","Today","◷")}
-          ${navButton("data","Data","▤")}
           ${navButton("dashboard","Dashboard","▦")}
           ${navButton("memory","Memory","◫")}
           ${navButton("chat","Coach Chat","✦")}
@@ -1348,15 +1161,15 @@
           }).join("")}
         </div>
         <div class="side-section">
-          <div class="side-label">Data Sources</div>
-          ${connectedIds().length ? connectedIds().map(id => {
-            const src = DATA_SOURCES.find(s => s.id === id);
-            return `<div class="data-row"><span class="dot" style="background:${src.color}"></span><span>${src.name}</span></div>`;
-          }).join("") : `<div style="color:var(--muted);font-size:11px;line-height:1.5">No platforms connected</div>`}
-          <button class="ghost" id="manage-sources" style="margin-top:10px;width:100%">Manage</button>
+          <div class="side-label">Morning Inputs</div>
+          <div style="color:var(--muted);font-size:11px;line-height:1.6">
+            Sleep: ${esc(state.manualData.sleepHours || "--")}h<br>
+            HRV: ${esc(state.manualData.hrv || "--")}<br>
+            Energy: ${esc(state.checkin.energy || "--")}/5
+          </div>
         </div>
         <div class="footer-note">
-          Stage 6 Lite application<br><span style="color:var(--accent)">●</span> Manual data + Strava first
+          Manual intelligence layer<br><span style="color:var(--accent)">●</span> Morning input + memory
           <button class="install-app" id="install-app">Install PACE</button>
         </div>
       </aside>`;
@@ -1365,7 +1178,7 @@
       return `<button data-view="${view}" class="${state.view === view ? "active" : ""}"><span>${icon}</span>${label}</button>`;
     }
     function topbarHtml(){
-      const title = state.view === "dashboard" ? "Runner Dashboard" : state.view === "today" ? "Morning Briefing" : state.view === "data" ? "Data Inputs" : state.view === "memory" ? "Runner Memory" : "Multi-Agent Coach";
+      const title = state.view === "dashboard" ? "Runner Dashboard" : state.view === "today" ? "Morning Briefing" : state.view === "memory" ? "Runner Memory" : "Multi-Agent Coach";
       const sub = state.loading && state.pipeline ? `${Object.values(state.pipeline.statuses).filter(s=>s==="done").length}/5 agents responded${state.pipeline.orchestrating ? " · orchestrating" : ""}` : "Training · Recovery · Nutrition · Injury Risk · Race Strategy";
       return `<header class="topbar">
         <div><div class="top-title">${title}</div><div class="top-sub">${sub}</div></div>
@@ -1474,27 +1287,28 @@
       const c = state.checkin;
       const manual = state.manualData || {};
       return `<form class="checkin" id="checkin-form">
-        <h2 class="section-title">Daily Check-In</h2>
-        <div class="brief-copy">The agents now combine this check-in with manual Stage 6 data: sleep ${manual.sleepHours || "--"}h, HRV ${manual.hrv || "--"}, mileage ${manual.mileage || state.profile.weeklyMiles || "--"}, soreness ${manual.soreness || "not entered"}.</div>
+        <h2 class="section-title">Morning Manual Input</h2>
+        <div class="brief-copy">Enter today's body signals before the agents reason. These values are saved into memory after the briefing, so PACE can learn your patterns over time.</div>
         <div class="checkin-grid">
           <div class="field">
-            <label for="energy">Energy <small>${c.energy}/5</small></label>
-            <input id="energy" name="energy" type="range" min="1" max="5" step="1" value="${c.energy}">
+            <label for="sleepHours">Sleep time last night <small>${esc(c.sleepHours || manual.sleepHours || "--")}h</small></label>
+            <input id="sleepHours" name="sleepHours" type="text" value="${esc(c.sleepHours || manual.sleepHours || "")}" placeholder="7.5">
           </div>
           <div class="field">
-            <label for="sleepQuality">Sleep quality <small>${c.sleepQuality}/5</small></label>
-            <input id="sleepQuality" name="sleepQuality" type="range" min="1" max="5" step="1" value="${c.sleepQuality}">
+            <label for="hrv">HRV status <small>${esc(c.hrv || manual.hrv || "--")}</small></label>
+            <input id="hrv" name="hrv" type="text" value="${esc(c.hrv || manual.hrv || "")}" placeholder="58 or lower than usual">
+          </div>
+          <div class="field">
+            <label for="energy">Subjective energy <small>${c.energy || 3}/5</small></label>
+            <input id="energy" name="energy" type="range" min="1" max="5" step="1" value="${c.energy || 3}">
           </div>
           <div class="field">
             <label for="soreness">Soreness location and intensity <small>optional</small></label>
-            <input id="soreness" name="soreness" type="text" value="${esc(c.soreness)}" placeholder="left calf, mild">
+            <input id="soreness" name="soreness" type="text" value="${esc(c.soreness || manual.soreness || "")}" placeholder="left calf, mild">
           </div>
-          <div class="field">
-            <label>Pain flag <small>${c.pain ? "on" : "off"}</small></label>
-            <div class="toggle-row">
-              <input id="pain" name="pain" type="checkbox" ${c.pain ? "checked" : ""}>
-              <span>Specific pain that should change today's plan</span>
-            </div>
+          <div class="field" style="grid-column:1/-1">
+            <label for="trainingPlan">Training plan for today <small>what you intended to do</small></label>
+            <input id="trainingPlan" name="trainingPlan" type="text" value="${esc(c.trainingPlan || manual.trainingPlan || "")}" placeholder="6 miles easy, 8x400m, rest day, long run...">
           </div>
         </div>
         <button class="primary" style="margin-top:14px" ${state.loading ? "disabled" : ""}>Run Morning Briefing <span>→</span></button>
@@ -1604,74 +1418,11 @@
       return values.map((v,i) => `${historyX(i, values.length)},${historyY(v[key], min, max)}`).join(" ");
     }
 
-    function dataHtml(){
-      const manual = state.manualData || {};
-      const strava = state.stravaData || { connected:false, activities:[] };
-      const summary = stravaSummary();
-      return `<div class="data-console">
-        <div class="report-head" style="border:1px solid var(--border);border-radius:8px;background:var(--panel)">
-          <div>
-            <div class="report-date">Fake Stage 6</div>
-            <div class="report-title">Manual Data + Strava First</div>
-            <div class="brief-copy" style="margin-top:8px">Enter the four signals PACE needs today, then optionally connect Strava for run-log context. Other platforms are intentionally hidden until later.</div>
-          </div>
-          <div class="report-actions"><button class="ghost" id="sync-strava">${strava.connected ? "Resync Strava" : "Connect Strava"}</button></div>
-        </div>
-        <div class="data-grid">
-          <form class="data-panel" id="manual-data-form">
-            <h2 class="section-title">Manual Daily Inputs</h2>
-            <div class="manual-grid">
-              <div class="manual-field">
-                <label for="manual-sleep">Sleep hours</label>
-                <input id="manual-sleep" inputmode="decimal" placeholder="7.4" value="${esc(manual.sleepHours || "")}">
-              </div>
-              <div class="manual-field">
-                <label for="manual-hrv">HRV</label>
-                <input id="manual-hrv" inputmode="numeric" placeholder="58" value="${esc(manual.hrv || "")}">
-              </div>
-              <div class="manual-field">
-                <label for="manual-mileage">Weekly mileage</label>
-                <input id="manual-mileage" inputmode="decimal" placeholder="45" value="${esc(manual.mileage || "")}">
-              </div>
-              <div class="manual-field">
-                <label>Last updated</label>
-                <input disabled value="${manual.updatedAt ? new Date(manual.updatedAt).toLocaleString() : "Not saved yet"}">
-              </div>
-              <div class="manual-field full">
-                <label for="manual-soreness">Soreness</label>
-                <textarea id="manual-soreness" placeholder="left calf, mild">${esc(manual.soreness || "")}</textarea>
-              </div>
-            </div>
-            <button class="primary" style="margin-top:14px">Save Manual Data <span>→</span></button>
-          </form>
-          <section class="data-panel">
-            <h2 class="section-title">Strava</h2>
-            <div class="source-big ${strava.connected ? "connected" : ""}">
-              <div class="source-big-head">
-                <div>
-                  <div class="source-big-title" style="color:#fc4c02">Strava ${strava.connected ? "Connected" : "Not Connected"}</div>
-                  <div class="source-big-copy">${strava.connected ? `${summary.activityCount} recent activities · ${summary.weeklyMiles} miles this week` : "Prototype OAuth is simulated here. Production Strava requires an app, OAuth redirect handling, token storage, and API calls from a backend."}</div>
-                </div>
-                <button class="ghost" id="${strava.connected ? "disconnect-strava" : "connect-strava"}">${strava.connected ? "Disconnect" : "Connect"}</button>
-              </div>
-              ${strava.connected ? stravaActivitiesHtml(strava.activities) : `<div class="memory-empty">Connect Strava to seed recent run logs into Training and Race Strategy. No Garmin/WHOOP/Apple Health integrations are shown in this stage.</div>`}
-            </div>
-          </section>
-        </div>
-      </div>`;
-    }
-
-    function stravaActivitiesHtml(activities){
-      return `<div class="activity-list">${activities.map(a => `<div class="activity-row">
-        <div><strong>${esc(a.name)}</strong><div class="activity-meta">${esc(a.date)} · ${a.pace} · ${a.elevation} ft gain</div></div>
-        <div>${a.distance} mi</div>
-      </div>`).join("")}</div>`;
-    }
-
     function memoryHtml(){
       const memory = state.memory || seedMemory();
       const summary = memorySummary();
       const recentDecisions = memory.coachingDecisions.slice(-8).reverse();
+      const morningInputs = memory.checkins.slice(-10).reverse();
       const injuries = memory.injuryPatterns.slice(-8).reverse();
       const nutrition = memory.nutritionTendencies.slice(-6).reverse();
       const hrv = memory.hrvReadings.slice(-8).reverse();
@@ -1691,6 +1442,7 @@
           <div class="memory-card"><h3>Low Days</h3><strong>${summary.lowReadiness}</strong><p>Readiness scores below 60 in the recent history window.</p></div>
         </div>
         ${summary.hardToInjury ? `<section class="memory-panel"><h2 class="section-title">Detected Pattern</h2><div class="memory-row"><div class="memory-date">${esc(summary.hardToInjury.injuryDate)}</div><div><strong>Hard-day stack followed by ${esc(summary.hardToInjury.location)}</strong><br>PACE found ${summary.hardToInjury.hardDays.length} hard sessions in the three days before that report. Future hard-workout recommendations will treat this as a caution pattern.</div></div></section>` : ""}
+        ${memorySection("Morning Inputs", morningInputs, item => `<div class="memory-row"><div class="memory-date">${esc(item.date)}</div><div><strong>${esc(item.sleepHours || "--")}h sleep · HRV ${esc(item.hrv || "--")} · Energy ${esc(item.energy || "--")}/5</strong><br>Soreness: ${esc(item.soreness || "none entered")}<br>Plan: ${esc(item.trainingPlan || "none entered")}</div></div>`)}
         ${memorySection("Coaching Decisions", recentDecisions, item => `<div class="memory-row"><div class="memory-date">${esc(item.date)}</div><div><strong>${esc(item.decision)}</strong><br>${esc(item.reason || "")}</div></div>`)}
         ${memorySection("Injury Patterns", injuries, item => `<div class="memory-row"><div class="memory-date">${esc(item.date)}</div><div><strong>${esc(item.location)}</strong><br>${esc(item.soreness || "")} ${item.decision ? `<br>${esc(item.decision)}` : ""}</div></div>`)}
         ${memorySection("Nutrition Tendencies", nutrition, item => `<div class="memory-row"><div class="memory-date">${esc(item.date)}</div><div><strong>${esc(item.signal)}</strong><br>${esc(item.action || "")}</div></div>`)}
@@ -1777,57 +1529,31 @@
       return `${flag.agent}: ${flag.signal}`;
     }
 
-    function modalHtml(){
-      return `<div class="modal-backdrop" id="modal-backdrop">
-        <div class="modal-card">
-          <div class="modal-head"><div class="modal-title">Data Sources</div><button class="close" id="close-modal">×</button></div>
-          <div class="modal-body"><div class="sources-grid" id="modal-sources-grid"></div></div>
-        </div>
-      </div>`;
-    }
-
     function bindShell(){
-      const modalGrid = $("#modal-sources-grid");
-      if(modalGrid) modalGrid.innerHTML = sourceCardsHtml();
       document.querySelectorAll("[data-view]").forEach(btn => btn.onclick = () => { state.view = btn.dataset.view; render(); });
-      $("#manage-sources")?.addEventListener("click", () => { state.modal = true; render(); });
       $("#install-app")?.addEventListener("click", installPace);
       $("#reset-memory")?.addEventListener("click", resetMemory);
-      $("#manual-data-form")?.addEventListener("submit", e => {
-        e.preventDefault();
-        saveManualDataFromForm();
-      });
-      $("#sync-strava")?.addEventListener("click", connectStrava);
-      $("#connect-strava")?.addEventListener("click", connectStrava);
-      $("#disconnect-strava")?.addEventListener("click", disconnectStrava);
       $("#refresh-briefing")?.addEventListener("click", () => runDailyBriefing());
       $("#checkin-form")?.addEventListener("submit", e => {
         e.preventDefault();
         state.checkin = readCheckin();
+        state.manualData = {
+          sleepHours:state.checkin.sleepHours,
+          hrv:state.checkin.hrv,
+          soreness:state.checkin.soreness,
+          trainingPlan:state.checkin.trainingPlan,
+          updatedAt:new Date().toISOString()
+        };
+        saveAppState();
         runDailyBriefing();
       });
-      ["energy","sleepQuality","soreness","pain"].forEach(id => {
+      ["sleepHours","hrv","energy","soreness","trainingPlan"].forEach(id => {
         const el = $("#" + id);
         if(!el) return;
         el.addEventListener("input", () => {
           state.checkin = readCheckin();
-          if(id === "energy" || id === "sleepQuality" || id === "pain") render();
+          if(id === "energy") render();
         });
-      });
-      $("#close-modal")?.addEventListener("click", () => { state.modal = false; render(); });
-      $("#modal-backdrop")?.addEventListener("click", e => { if(e.target.id === "modal-backdrop"){ state.modal = false; render(); } });
-      bindSourceCards();
-      document.querySelectorAll(".modal-body [data-source]").forEach(btn => btn.onclick = e => {
-        const id = e.currentTarget.dataset.source;
-        if(id === "strava" && state.sources[id] === "connected") disconnectStrava();
-        else if(id === "strava") connectStrava();
-        else {
-          state.sources.manual = "connected";
-          state.view = "data";
-          state.modal = false;
-          saveAppState();
-          render();
-        }
       });
       $("#send")?.addEventListener("click", () => sendMessage());
       $("#composer-input")?.addEventListener("keydown", e => {
@@ -1842,10 +1568,11 @@
 
     function readCheckin(){
       return {
+        sleepHours:$("#sleepHours")?.value || state.checkin.sleepHours || state.manualData.sleepHours || "",
+        hrv:$("#hrv")?.value || state.checkin.hrv || state.manualData.hrv || "",
         energy:Number($("#energy")?.value || state.checkin.energy || 3),
-        sleepQuality:Number($("#sleepQuality")?.value || state.checkin.sleepQuality || 3),
         soreness:$("#soreness")?.value || state.checkin.soreness || "",
-        pain:!!$("#pain")?.checked
+        trainingPlan:$("#trainingPlan")?.value || state.checkin.trainingPlan || ""
       };
     }
 
